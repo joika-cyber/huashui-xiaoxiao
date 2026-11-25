@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>划水消消</title>
+  <meta name="description" content="王羊奶专用的三消小游戏，可离线游玩">
+  <meta name="theme-color" content="#2a1250">
+  <!-- iOS 添加到主屏幕后以全屏 App 形式运行 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="划水消消">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 首页 / 选关 -->
+  <section id="home" class="screen active">
+    <header class="home-head">
+      <h1 class="logo">划水<span>消消</span></h1>
+      <div class="owner-badge">王羊奶专用</div>
+      <p class="tagline">交换相邻方块，三个连成一线就能消除</p>
+    </header>
+    <div class="home-actions">
+      <button id="btnContinue" class="btn btn-primary">开始游戏</button>
+    </div>
+    <div id="levelGrid" class="level-grid"></div>
+    <div class="home-foot">
+      <button id="btnHelp" class="btn btn-ghost">玩法说明</button>
+      <button id="btnSoundHome" class="btn btn-ghost">音效：开</button>
+    </div>
+  </section>
+
+  <!-- 游戏界面 -->
+  <section id="game" class="screen">
+    <div class="hud">
+      <button id="btnMenu" class="icon-btn" aria-label="返回选关">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="stat"><span class="label">关卡</span><span id="hudLevel" class="value">1</span></div>
+      <div class="stat stat-moves"><span class="label">剩余步数</span><span id="hudMoves" class="value">25</span></div>
+      <div class="stat"><span class="label">分数</span><span id="hudScore" class="value">0</span></div>
+      <button id="btnSound" class="icon-btn" aria-label="音效开关">
+        <svg class="snd-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+        <svg class="snd-off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
+      </button>
+    </div>
+    <div class="progress">
+      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+      <span class="pstar" id="pstar1">★</span>
+      <span class="pstar" id="pstar2">★</span>
+      <span class="pstar" id="pstar3">★</span>
+    </div>
+    <div id="goals" class="goals"></div>
+    <div id="boardWrap" class="board-wrap">
+      <canvas id="board"></canvas>
+      <div id="toast" class="toast"></div>
+    </div>
+  </section>
+
+  <!-- 弹窗 -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <h2 id="modalTitle">过关！</h2>
+      <div id="modalStars" class="modal-stars"><span>★</span><span>★</span><span>★</span></div>
+      <p id="modalText"></p>
+      <div id="modalButtons" class="modal-buttons"></div>
+    </div>
+  </div>
+
+  <script src="js/logic.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

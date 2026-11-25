@@ -1,0 +1,2521 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>划水消消</title>
+  <meta name="description" content="王羊奶专用的三消小游戏，可离线游玩">
+  <meta name="theme-color" content="#2a1250">
+  <!-- iOS 添加到主屏幕后以全屏 App 形式运行 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="划水消消">
+  <link rel="apple-touch-icon" href="data:image/png;base64,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">
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAtxElEQVR42u3dd1QUWdYA8P5r1dnd2Qk7aSesgWAAzGIYRR0DBsw5B4IJRQVBEDEASs4gSaDJGckoSjCgCEagyTmYJYnOzPd977uvqru6JDhQYHV5Tp1zD6dFcPqc/s2994V6T2Ci0kHGCZU3VJhCKLdDnJSEmXIbGadwtJ5SwnFaHC1nJHFWqRnHmGZzcbyGsBDHK0uI0TjO4XgJcV4aL6wgRuGwHvWcDBtxPLOFGEnGUztJ2ON4AuEAoQjRBOEoCSfFRjKcIRQgGlykUe8qCTd5iDoId3HUetDiglwNGZ44qiG8JOE9oooKHxyVEL7iqLg4XBx+OMrJ8MdRBhEwTBzCYaVkBOIowTG0JEgcxcGSCMEhggj9LxlFEGGSCP9vIY5fCiNwFEBESuNxFBk/P47++REZMeJ4GEvFTw/jfnpAxiUc9yHiyfjxfsKP96hI/DGfjCQy/pMn4PXwehjrSSYB8Xp4Pcz0YEC8Hl4PYz3vAeL18Hr6qiflP3cFvB5eD2M9YkC8Hl4PMz0YEK+H18NYDwGI18PrYaonlQTE6+H1MNOT+kOugNfD62GsRwqI18PrYaAnjQTE6+H1MNODAfF6eD2M9UgB8Xp4PQz0XP7hjoDXw+thrAcD4vXwehjrIQHxeng9DPVcwYB4Pbwepnqu/HBbwOvh9TDWc+X72wJeD6+HsR4KEK+H18NETzoBiNfD62GoBwPi9fB6GOtJ/z5HwOvh9TDWc5UExOvh9TDTgwHxeng9jPVIAPF6eD2M9Fz7/paA18PrYawHA+L18HoY67n2nRgQr4fXw0RPBgGI18PrYahHDIjXw+thpifju5sCXg+vh7EeChCvh9fDRE8mAYjXw+thqAcD+uT0uMpnOMtHOyjY2CkYk2FPC1e5KAhu6vGb7A7horHBVWN9p7gwf3/AZNdg5bBPS0/mdzcEn4QeN/kHzgoxdorG50cu7GVYK653kre+IJcuWz1C5UiP+Qdstqqc1/pPL8NNY71wkmukXDr39WSRgLisx0U+o09uupXkKu/lPTyPTT3BCpleM0/3yU03kpauC1UK5bKerG9vCDirx0U+00Zxb7cmhDM2xM7bma6xV7T9uGibkWiroWiLoWjzsdjZWyHcxi3r9rec5a18ht/92HqAjvt83e5BHBkaaz8GQpQyXZQyTZSiKkqeIkqelO49OtZOXmg2rNvfclozN0wphJt6SECc0+Mq/7ArHbcJK9JX7BdpmqLTHsjMHZm6IhMXZOyEjBzRMQdkYIeO2qLD1uiQFTp4vkXTTLRGL3bm5q6M3OQ8P54er1mnuwqItVcRpc5pKViKalagmmWoegmqXoSqF6KqeahqLqpUQ5UzUeUMVDEVVUwRJY5J95RzO/JTV0YxIy5zTU82CYhTehwUfDvnm5mb6g+fR+Ze6MyF3uhBByzRPgu09yzSOdOyzTh3kbabigb9H7RT2HNxeO7A6oHE47D2t/fyzdFhuZEzWwpWoNq1qGZVb/Sg8kmofDwqH4vKlOszFYRmP3di5DfjJKf0ZH97XcApPbaKJp3pHLFClt7M9CCt02i3Gdp1Eu04kbtgt5vyUvo/fmFE+EDpuTjFowudWahuI6pdz0wPKhuNSkeiUvn6zGHCkz/S/3H3peu4o4cOSMZ6oGxZKW6gFyzRntPonC+y9EEWBKCznhjQSTd0os960DYTtOV4y9qj6TO30A25y3n2X4/XrDP0Dzjdd2pL4RpUtwnVbiAArUM1q1HNclS9tK96UOkIVDIMlfwiiv/R7bD0P2G3RTluRBoX9FyXAOKWnlh1zRaAYnUR2fghW38cNv7I2g+d98WSgBFkIEPHPulBm43QRkO03kC0QMtNaQn133KUN+qPHheNDfTEI0pbiOq2orptqG4HqttJxHb8ndqNqGYNqtZAVQv7qgcV/4SK/9Ny97tYm+/fMzQ8VeZ6SEDc0pO++iC2YheAHAKRUzByCRGHczByDES2AZgRZCMoZMfs+6oHrdNHa460aBygG3LChgZAT0vheuymXhM16KCGfahhPxHwYg/+JkiCnAS1DAxVzuqTHlT8HRJ9g0Rfp3t809WQDPVgQDLve+h6RHvP4GQDdJxDkFsYuhCBvKKQdzQOeAF/dA1FjkFYGKQiMKRv11c9aNVhtEKvZfE+uiGvEWH96XskenZjKw0HUONh1KSPmgxQ0zH8tfEoajyEGvai+l2odhOqBkMLUMWMvupBRV+gos9FcV/QDclWz/VvswXc6ZqlekAJWPGJRn5xKCAeBSbgEMYj/0vINwb/FWQj+EnIQybOOAnt75setPzg/2noNqvruI6RGvIdltp7PQEqkd3p2YuhgJgnx9ETU/T0FHp6moiT6IkxJtWoi1MRNrQMVc5F5VP6qgcV/f3/CocUxnxO/dc9lq6VoZ4bJCAujNjFlcteiPV4RqKLsUiYgEKSUXgqiryMoi7jr/A6OAkzgh8AQ1Z+6JQHMnTAGaiPev536YE/l+x/vkDbdcxi8g3YKK4PGJrTyxE7NcUs0bMT555GPdRkSNA5g56dQ89t0HNbHM+s0TNL7An+tvEgqt+Nm+uqRTgJlY/rq57/eTzk94dD0ly/ogwJZ5yQlZ4b32QLZDhbSO+accsMzTKw8IjAaQZSTlgqir6C4q6hhEyUmIXjUgaKTkdhKdjQhUicq2CED4MyPWukfaavet4t3texaG/TfE1aM2TYm9lCeuvTUrgOt8z1Wji7QMHCeiwwmhdO6IUbenkBvfREL93RC2f0zAbDAkPQGMGvQCHDSWgiAz1v7w9pzx8See7f1NuIH54iEz1SQOyvVFBzzTBibznpis5fFKcfaHegbIGSmHSUkIVSb6IrOejqHXT1Nrp8CyVno9irKDQFpyhokmCYZuaOO6E9ZxnoaVuk06KunTVN2oT5DUv5sB568cqNVEN1W3DjjIvXEfTEBD01J/S4opfe6FUAeh2EXgej14HolS964Y7/CvIQtEQADiehhahcFZWNYqCn9e6Q+qufuRwSj8uc18yRiZ6b32QJZLXOJW19yPkeyEAwyPIIxzKgTkVdwYkn7SbKyEU37qFbD3Bcv4clJV/HeSgoERcyMAedEFQxaKJ3mDLQ82qh1osFmr6SqWp7BZ0Pr5JS083C06MIPZtxawyNM259zNAzK5xsXvpgOs2RqCUOtcSjlljUHI5e+eOc9Ow87ocgCdVuxvOKUMVKRzPQ8/rOkJc5Q+4ES5uhmFFC9vVgQDJZY6fSj3DmJmK20BtZX0ROQbgwQXmCBANpJuUGupaL3eQVovvFOODFzfso/TaKz8QFDiodjPMtvNFxJ9wGQfphpOfpgt2PZkknGD1HePSkh77UVZ+jgeea6zbhvhg6myYjXKGe26GXHui1EDVHodYk1JaO2jLw19ZEbAhgPbdHT81wrw2j+pplqGImKhvDTM+zm0OeXB/ie/xb8v24rJnDvh4KENs7NKhPS7pSgQEF46QC9QuaZWh3oGBl56PcAvSoFBVXoZJqVFCG7hagrDychKCnhjGaSwieqgZAupZo+wlmeprm76qftzNu0ioqCfW0v4dKP+m+qpKVio3ExA8AOk7ULwdcvF6H4sTTdhW9yUEdeejNbfwastErIc5P4AzqXf1OPD1dOQuVKqGS/zLT05g5+H7EP+hJiGU9twhAbO8Oo/b34PRjKVmmwCUsiAB0CQOKz8CtDxSv/CJUVIGqGlBtEzZ0T4QLWeoNPC7zpwGCDLTdhLGe2nk7imZLk5D/sOSueoTKkbTeeZV4nat2Ax5V4Q7aCAN64YjTTHMYTj/t2ajjPnpXgjoeofbrOAlBXYP26OlZ1CQBRGYgpnrqrg2uSR/sbSROQheWrGFZDwbE/t5CafqRrrFfQOd88KgKeiDIK9BBkxkIrEDZAkCV9ai6Eech8ARpCTJQRBrulsgSZuSAp4K2GjPWU/3b9oq527wkq63ucpZd9xZ6SHb5CE8r0lZJ1xFN9H48BMMlzF6SgRJRexbqyEdvi1DHA4ypJQF30+IMpIfqt+OVDdwDjeyPnsrLg++ESJNQ0rAkNvXc+iZTwPK+ZmeFGGrw9d4au4UXXqaAURh0NtBEwxAMlEAHffsRelCMCiswo4cl+I/X7uD+GvokGK85CPG/YGCPdM6iTUb90VM2Z+u1qWsp3F33NVMfkih1Lm2NfRVe6qrfg5qOEk20NR5tQalqiUGtl3HigfrVfgO1XUbN0ejVRSwMhvqQsXATvQiPwkrk+6OnPHVwSfJgR13xcCxigj2benIkgNjbFU/Vr/QV+9/boQEvrIg+mt4GwSgMOp6ch7j1gYAXmXdxcw2jMGECTlfWfnh9/rA1ngSC9NMPPcVzthTNlm5ACxiWRNcjVI6gAL23QwNCXMWoNsiRSELBePDVmoxaU3E5a47BnTUehZ3DU0H12qhmLV6WL5uAG6D+6RElDo44J55X9Fyyhk09Of/GgFh9pkI6eu+0txC+QkKy9RdPBQUm4jYZOiFod67exm4gG8H4K/kGHqBBioKfgZ4JfsXIETdAMIBfc7Sfeh6rbfIfq0FVMfozFR7zD0i2Fyq/v79nsTgJNegQU0EnMJEXTuilFzEPFIr7odcheAz/0h3nJ/gBoIYnEjVwAwRjeNEP/dRTED84zUM6nmdTDwbE8hM5FKDOu8OgEYY/QkdsL8QzhD7EZDTkIahl8cRMdAIxEw29M+iBv4X2GTIW/PphG6R1Cm041n89D2dtjJ20gnx7LnLH6E/kULPPuRHTOu8OgxeQTmBY3rCXKGSmeOECxvMvXPCQHk9Gu+PmGs8AmeJ1VkhXNWtQ5Tw8DV0yvP96HsUNvh8zmAJ0aZQ/a3py/p0hYPNpQGf5aGpXfDd7C8HQKXfcTdsRU9JeUbihDkpEocm4rYamh1wIg+87h+BhP/wwdD/7zHH7vPpI//Xcm7UhacpKijj9aUBpA5Qyq8vewnl4sxjuprcTK2KHcS2DfgjKGWQjcPPMAk9APzHC0z94IWwdqlJHFdNQ6Sgk+n5A9ORHDfbQF+/0iBxvx5qe2yQg1p4ldVCwES9+zdvZzc5UfVv8GjfU3niNAioUuaMDqpUPsaMD2iOABYO18774x47Z4+K10xSt1R8QPXkz19/5dR0dUGQXQD3sTJ1L5KE1eG4aTwvtJxZW9XG7g3d06OM/Qn6C8Rr0T+QyaqkSKv4ZFX05IHpyIwb5mnwt3jc9V5s1PRgQm08i2ylIOmiNvd3va4aAP55wwQN7PD0t2VkGAaUNOiRyNxn8gL4dHrqDHuidB05PzgzpQCxwaCKpJ5DeQfe0r7lyNs4r1cuJVLQFr8+DJGiW67Vw1hHvJluOquajiul4Bb4YeuevBkrP7bBBgWe+lPTRq1nTQwJi7zl2CpBo+/Ee9zXrnkdHbPDylokzHmFBqwSDtTOemBRkHWAHv6JnhVdPd5zAelYOpJ4bM9bQFlaDyefY/Se70QD1vK8ZZFTOwUuk0CDXrCS2Qq9Btavxa3Iza4UaKp+MG+fiXwZWz62QQbEO/yTfoRcJiBU9d0hArJ2CIAW0zeiDu+LN8QtQAn8FmQYaHahW8AJgwc/A38KgfctxtPbowOYe0JM9fZW3ymIaIHwEAgUo1n7UX+2Kn4jKp+LhFSQkqGtVv+Gv8JN4689knHhK5JDoP0j05cDquR40KMaOBogtPXf+fU3A5hka9hSgrYZ//UwFjK20z+BMA9/ZQ3xT8xSuWUAHEs8Adc2d9GROW+mlvFiyoBEU1RnQyF48UzEGlSmhsrHEZrFx+AV8s3QkHnAV/4hE/x6orpmuJ0s4KMpWCog1PQQgFk9gkQLaYtiHZypgkAVoNhmhjcf6Odf8l3quTl3hMmbRe4B+lgISnhrRl2cqhqOSoZJl9h/6P1v4AT3X/AZF2nQCxIaeXAIQe+f3SAFtPsbgiRwW9FyZupy2pBpEnt/jP9lV2gP1/Ymc/q9U/KWedN9B4VZ0QCzpyf2aAMTa6U8UoNjZW7mpJ1VVejAD/fQnGiAu6knzHnTh2Nd0QOzoyf36qoDNs8Nc5aKkgDip59Jk6VP09LPDpBs5HqhyUE+K5yAPCaDo8bas6ZECYufkOQqQ27hlHNSTPEUjeLy4g7ZVWEc/ec5W8hiGKEmFg3oSPQbZ7vvufUBs6LlLAmLz3ELq/+8WTTOu6UmYvNRLWdxBu8oZ0M8tdNNYL16q9FLgoJ5oR+laGJt6MCCWT720Vlwv7qPX6HFNz6XJSxxHS7ZzDA2kn3oplPTRQrP/ck1PvNvfhObiPWX2W5TZ1CMFxNqZqU7y1uI2aOZmrumJmLiYSpDhv2TTz0yNkE+XtkH3lDmlJ9blb6764gYoYK4Wm3ryvk4XsHzi7gW5dGkV22bMHT0xkxb7qKhLjuzQ6nriruOaueIdHSFynNITbiutX4kjL7KpBwNi/7xmqorlLtLmjp6oiYtsRlHPybt2Pa/54q9mkqMOf+SOnminv3mf+FxSv5RY1kMAYv20b1d5L/FYTEWDO3q8VRbSNnJkdz2vOUruivSZ1JChHNET6fA3m73i8VfoNCOW9eQTgNg+K957eB71UeUu2M0FPeET1Kn04znCvKfTvr3m7ZMmIW7o8TKRbma98ssllvXkf5UukMlNA87yVuIkpLy0Ze1RmevxVKann6yezoqPlrssTULBP8lcT5DVYCr9BMzRYl9P/ldXBDK5p8Jn+F3pwS4zt8hWT9D4hbTnms0/fNMAlYTwcOyuLPWE2f3N7diX76cftvXckwCSwS0nbnKe0ic0FmjJSk/ohIX2krkfW4V14vTT8z0VkIRst4hnpYUnf5ChHp+T0ucJw6YZyUQPCUhmd+TYKewRFzKlJS0aB2Six01pgfRU4aGBvbnlJGiis/QZGo9vZaJHeE5avFxXq8lKDwYkwxuWLg7PlZ7rC4YW72NZj7fKAtoJ9ga9vyPHfek66XMacV/JUA9RvOJkpefeV5cFsr2f68KIcLqhZnUdmeiB4tXXG5ZstyjTDP1LVnpixtnIUM99EpBsb3dzpzVDrmOWPF+gzb4e3Pr08X6u2BFpdjRDj6M/Z18P2frIUA8GxIW7AR3ljWiGFjfN12St72Gmh7xpIO59Q6kuX7Gpx3vxKpnrIQFx4mZJJ5ohiKxpGz7SiJ0ac/VTD3nTQNzwVLohP5Nva9I/+xh6PI0/p1+owBE9D74kAHHkXlKvEWF0Q74qGo9mbflIs4UDooe8ZuDS+4Ygrnp+MYB6Asw/c9D9hv7vy7zvofQ8+DJNwKlbbX2HpdpIllrJiJu0qmj2lv6vc1ErFQzGXL25Yclj6Vr6Z+x86Ps0ty/6qSfUerC74Zf0f9Z+i1KSoi939FCAOHQncsDQHCd5w05XhnkpL702dS2D/T0+Kuqd6EDi6eV8T19vdwub6NgpFTkd/D7J+Yt7kZ/1VU/AmX84Hvym02VhULZkO2LvquchAYiLN2r7DUuxV9Dpet+g/1iN2Ekrkqas/MCu+ODxi72UFzmO7ubWS88R5n8519yfmyUThiX7/ran66WFFwy+DbP4Ktn18+vCIT3pCTn3T79T/3KTbA2jh+tqtSTFizKcLexJDwbE5fvYPUd4dMuIHt4qwGUx9TRgTyGl8/Fv1AZGF3/T+fCFuq5HvvEy+trT6Ou/+LHVasRY/QY39Tz8MlXAWT3Uad/+w5Ld5SyZXdnsKK/lO8y12/09H/tG7cRhSUHTTVzWzGZ2ZXPAXC1yeyGX9TyiAHFWz3t35AxLAkkucsc+jAa6HFc5g4ChgZ32NbOph35ec/LQxIjx9p5L1nTqkLqG15LV/nO1sRt29zUz1iMG9Eno6XRmKkTg0ES/YcEQ/sOCyKA/S0p/pkKGero9MzVqvF3UeFsq4kf6sfks6QDqwYA+UT2R0nhMnqHxqehh8/Snj61HCojXw+thoOfxFymCT1ePs1KWxcRUMixxpHwqehzGBRIhJMNvZPQnqgcD+oT0OCpl7Z8bsm2R79TtZz4Q89dbb1/kc25icoDcbS7oiR56xW584LbFp2Zt3jNWc+sHYvtiM7051gGKUZ+KHhIQ1/U4KmXvmxvyYTQ9xaoVLsbTogNH5LCvJ2roFdNpHstW638YTU8BkoSKURzXU0AC4qwewxlxK1e4fpiIhmUoxPzj3h/+Md05QUEjbrGjJ2pouu5c2w/7+NXs8Fxb4zm2xh/+sRWrjp6e6sZZPQVfJAu4qcdBObtbOivOhe0QZunE3jMVtZuI2oyL2oyK2o4VthkUth0taDtc0Lb3VuPmqLzlzgm/GXl1/fWDBKOPp6cnOrPMjmh4W25O9t7zMPZgZeqBytR9FSl7KpK1K5I0yxN3lSfsKItfluCmHmIz08aoW0aBChEc1CMFxB09Pgp5W7t0OYuMvffF3TtT0n66uN2suL0nPYcetx583HrgUeu+R617HrbuutGw0jfz1/32nTok6/GJH0OP3figTl2O6mGd9eHOuo/ij1ZfOVJ1Wa8qrSc928oubSmN21wau7E0Zn1JtHq8s6rpwU6Mdi46mfRzEqf0FJKAuKMHEs+89Tb0z3uze5JpXpN5SXtf9eg8aNV60Lr7fsuu+y3LfDM6Mdqp7j2weqBH7kRnQ7izYfVVg+r0vupZWxK1ujhyZXHkkrsBv3qcpP+zapv3BCtEcEcPBsQdPWcnpdE/48XG3scyyixL20HP2X7o2XGvZdu9li35LUt8MjqlopDhN/qvB8pWp8SzMdzleM01Uo8+Uz3LRREaovAlorDfrrpPMtWl//uuKn4c0fMeINnq2broIv3T1QrMOl/afq60/TwR8IKUdKq4zVTUdrzvejbnt2zMa1mTUT/L0ItuKBQMDZye2aeOHn2caFxzDcKkJgO+Hq/GkvSrruhVph2o7LOeRUWhC4tC5hcGTxea0w3tWmTKBT1F/0oScE3PnAP2p/KfWJe125a125e3O+B4A2Ff/samDGMyL2kzK247Xtim30c96/Oa195tXnO3+Tf7eOo/t2C9ddiw6wOiZ6WP1YmajJM1madqs87UZp+tyz5bmw0v4I+mNRnHq68erbqiW5mqXZ7UVz3zCoPmFgbOyvEap6dJNyRzPWJAstVzbEYcXc/p/CdAB9w4V7S7Vr5xr3rjQQS8cKl841iBYUE2glQEeehw3/Wsym1ekdu8MORuJ0P91LMr1e9kbebp2myLuuvn625a19+yqb9l25ADX63qb1nW3YC/Al4GVelQy7TKE7f3Uc/sAuGsgoDpOZ50Q+aqLrLVgwFxp+8h9diVtztVtLtVvvGseuNd3XGxpsOPCHjhU/3mQtUbUAWZCYqamajNsLD1YN/1LL/TrHGneX7we4b62jV31QP55lz9TZv6HIeG286Nua6Nd90a78JXeA3fAVLmdddNazKhMTpQkbKrLKGven597D/9sZ/qLY+xNEPuKr4y1EMCkuWIvVPlguwCetwxnTeARljbEVz3NrT+bVh9R0g9vO4IqAVGHW6EIctS3A/pF7Tu67ueJbdfL771cp4wh3oDu9S9mI25QA+wAD3n62/aEXQ8mvK8ntzzeXL/4pP7vk/uw4sLTfkujbl2DTkWdTegnEEt21uRvK30Ul/1TH3kp/rQd/J1t7GHdlNvIPWnBFnpEZGAZDVbSE0VUn2PYznOPaDHvwZzCa9/G93wNrbxbVwT/hrd+Ba+E1jX4UsYAm1nS9qMiCTEQM/iG88WZT9Rs46hDNmNj+/lfE+nvud0bda5uhvgA5R4NuVffHpf+OxR8LPHoc8LIOCF8OlDYOTWdBd+BvKQcfW1Q5Vpu8sSAFBf9Uy57zMl32tShjNlaOWqI7LSI/pXokBWeuitz8FL96A7BhDQ90Dl8iP0RDa8jWt8l/jkXcrTd2lP36U+fZf85N2lpnfw/aC6DkDmXPEGChkkoSOPW7UfMNGjntm48FrdDH0PqpBFDM3+y7lmqnjBmAuGWpBRwARUKKfGXMg0fk8fgJiI54UxL0SXXpZAxL4ojnxeBN+EhARFDboiaKthXKZTngRVjIGeyXc9J9/xmBByhnJsoeosEz0UILb1+ChI+48t7knkWN2eSD9QoQJrOyLqsR4Qk/7sXebz37Nf4Mh4/vvlp+8Smt5GNLyFWuZBJKHTxW0GBa17HzDUs/Bqzby4QurNHFYTfnidi75SQY7YzWozoUe2b7gNOKBgBT17DFziX5akvCq//LriyutK+Jr0qgw8gSHvJ/ccG+9Ao21UfXV/RQpUsZXFTPRMynGbdNN1vL0B9WYu/xTPvp5iApAMVkmp1XUoXmb5T2BUZVXaDiMsGG1BsxxShytXEqHn+ovfb7/6/e7rPyBuv8SMIBvFNb4NxkmoA4b35iXt0Ervf9iynZGeBVeq5qdVqDkmUIYih2Z/YJW002whBKQT6H4cG+5A+gl4+jD8eSFknbRXFRnN1Tdaam+11sHXa81Vya/Kol4UwQ9AIbOqvwmF72BlGgzmVxVHMtMz8brzhGSbsQd3ke9Hf/Y59vVgQOzr8aWlH83ALHKG0AoaoAo8yILuJwynn7dQsyD3gJ77zX8UtPxZ2Prng+Y/4I+QhxKb3kEz5FvTAVXMogTG8637H2FAzPTMSymdl1Q8bY+NJAkF9LRDg0o/qod1yLlmo2oMCEA4Nd6Bxjnw2aOoFyLINxnNVTmtdffamh62P4Gv8Prq60qABUkInNk05JysydSrTNtVFg89EDM9E7OcJmQ4jHOTLr5e+ekSy3qK/5UgYH9/j6Gk+5l9wJ5aqSAyEADq8K+F3rnjUtPby0T6yXv9R2HLnxXtf1a2/ylq/TP/9R+QhKArgk7IjwBkWdJ+vKjtwCNcvxjr+S2haJZtLC0JZXW7v4f6qKh1LqhEJCAYfEF5Ah9QqlJfl2e31OS1NRa+eV7W8VL05nl+W2NWc3Xiq9Kw5wXgDFppKHwYUDkGpM5Uz/ir9uOv2I7VFSchyylOLOsp+ZwAxPLeQmq5dHdgFrVKCu0w1CMPooOGDEQBAjFFrX9Wv/mzruN/Str+vNf8x3UJoIviDNRuVNi2/2Hr1nzmeuZeejwn9uE0HWvyjZ2aGt51b6HpNA8q/VCrpMeq04HCeUkGCiIBvSq/3lIDaIo7XtS8awZD99qbgBRkJhKQLWSg2sxDVWk7iRK2oB96xqXZjHU+Jm7qN+mwrAcDYlmPo1I29T+6SV4TtcYODuyIJtoX90AdsUQJy3rxe+6rPx61/AF0ytr+LGj94+6rP6CuwdAMspRP9RuHCjySNyhs3fMA6le/9MyJvv+rVST5xtYud+q6M5XaW7g+3JlaY4fBFHQzFnU3HBpu4x7o2cPIF0XJuIRV32mtf9T+VNTxvODN09zWBmiD4okS5tGUZ1V/C4ZvupWp28ouLReF90fPuBSrsVFnqdQYIRfCph4SEKv7mqn2eeW5MPoOjTPFbdZ4GP/Gq/qNsBaP4ROacBN948XvgAbaIGiAoI+GP0JmAl4wkoeGCUZhZsQwXut+y4a8fumZHZmnFiDFHf3fzE77mqkPib6/53DV5ePV187UZsPg3JUYhYU+L4h7WZz2ugJSzu3W+rttjfA1q6UG0hK0R/5PH7o05sIoDHLY3orkTSWxS4pC+6Un6fzYeMuxpvvI92agZsmmnlIKEGvPVFD1a2/cPfoOjZOiNsuSNhjJu1figViweCD2FgxlPf8d3EDAiyvP3sU3vYX0Az/jUonngYyL2nQfte64h9NPv/SE56qF3p520Il8e45j4+jPVNiND6T2FtL390AWMai6YlqDR/LiJCQZiIEYaJwh8aS/rkwmhvFBzx7BD9jiBigL/oXd5Qlri6OgfvVTj0qchYq7IVXF2NRT+nm8gOUncqj/xY3uNtH390CcLm47T7TSZCcEhSyq4S1wSX4inkiEgX0cMRkNjbY7kX5OFeOlDJ0HLZvyBkDPrOCb0039xMPDhZ70J3KotQsNb8tO+3sOVaYZEq002Ql5NuVDmoE8FP1CBKmInEiMeF4EAzQvYhLInJgEgl/cWhq3TBQ+pyCwv3pizioHSfedsakHA2JTj/nEVGr81Wl3mGFhm0lRGxQycjwPhnxr3gTW4oYayhlkI8AUUY+nfyD3gB5omM7i9rkVxl+QfqB49V/PzMDrM2yiJLPSVvTnuajZ583J3p12h0ElOlyJC9lpyYSQe1Oez5P7kIoADWQd4bNHvk8eQOsDKQq6JeMavI4BA3hIPwsLgwdAT9QZ5YhTKvt3kO/QS9mbNT0kIPaeBqQALT8X1nVvoUGB2ND5UlzLXIkFeV9iKT6gFg/vgY4nsamDWAXDxevQ4xbN+83Q/QyInl8DsmZcSKVyJP1pQOr/7253xYMhvcrLkFegNkEts6nPAUbQEoEkCHgBf4Qm6WzddVIP/MqGkpglRWFqBcIB0aMUdlLFWIcGiCU9ZSQg1p4lpZ4JBEDd7kw9WtB6vKgV+mKLEtxT2+OtHXj/BoRLxRt4bUds5IDKBUN30KNFFK+VA6TnV79rM3zT6YCoZ0kpQN3uTIV0olOedLAyzaAq3YSYm4Y6da7+BiQkCCB1pi4b+iQY88Ova5YnbCyJIYvXQOkZE2KqfFwMSFPdhDU9ZZ9fErD5HDsFSCs2v6d9zXqPW48VtsLfmhW3nS1utywBMbg3ora0QpYyKGjVfQS5p2Uz0foMoJ7pPpcpQE5jY6knkSlAPe1rhtAsS9xXkQwJ5mjVFeiKoKiRe1uN8JbWdPg+/NbOsvj1JTEaovC5A6pnTJCJkr0e+Q611E1Y0yMFxM4pCBQgzZj8D+yKh6/ACLpjw0KckMgW+zjRJ0GKOoi3j7XsvIcr18qB1jPNK2XqfjspIOIIBArQr2aHP7ArflNp7LbSS7vKErTLk0DS/oqUAxUp+ytToMBplycCnc0lsauLIxcXhc4ZaD2jhcZjbA+9D4gNPeX/JACxdoYGBWhXTP6Hd8VrP8BK9j9sgUwDo3RdQtXeh3jbBtDZTMw4fww90y4kTT3sTAHKEAMSkp/NXFvjv9wVv64kGioUfBMGWdvK8Ff4W/irVcWRS0Vh8wuDBrDvofSM9jcaY3OQBoglPRgQmyewbJcA2hmT36tnKogtPmQQi+3NG/MGZr6nRz3uCVP1xICcxYBuUoDm2Br38pmK5aJwMqDXgWZZvTBkXmHQAMz39KBn1EXDMVa6FCDW9EgBsXN+z/ZFPuRnsyM6/yjTZyo+qh5V10tUD0QAukkHhFvUvj+R09+Vil7oGeVjMPr8ga6APraein/GCdg8/YkCtMolkZt6pjhLd7gGKCaTpz/5jYyW7oDmpJ6RXvpjTLQ7AWJBDwbE5tlhB+YEi586tQzlpp4pjlEUIPrZYRQgbuoZeeGIkoF4i7ShmgVrekhA7J08Zzkxhfxs5hl5c1PPlJPScx3oJ89RgJYluHFQj6L7YeVDO8l36KPkyZqeSjEgts4tdB2TSX08HNQz2T5iipF4g73Wwgv0cwu3LzYjPx71EBsO6lF0PUQRjxkRyJqeyn/GClg+9ZICtDEyj2t6JtmGTtEVH+Khr+ZHP7dQb441+fHMtDHioJ5RZ6VPObKpBwNi+cxUqo/WcErgmp5J1sGUb6FiMv3UywDFKOoT4poeBeeDY4w0qQ6aTT2V/xADYu/E3XMTkslPaOZ+e67pmWxygQLU9cxUCpB6vDOn9Cg4HlDZs418b75KnmzqqSIAsXpes3CE9GniTcnF3NEz8XzglD1WVP3qeuIuVcVUTQ9ySo+ihbR+Zf0QzaYeDIj90753qIur2BxDL+7omXhGOv4SKiR1Pa9ZSKtiS+4GcESPvP1+JV3xTiBtdROW9VT9I0bA/lnx7qOvUR/V2qRiLuiZYOk/WU/cPq9b5tjTad8rVh0Vr6p6nOSIHsWzOhTr2OFClvVUk4DYv2lg9QoX8dZEQy8u6Jl4Qtr9mE8J6ems+NNT3ahP67er7jLXI2e7V+nAdvL9rF6px74eDEgm91S4j75KfWDLwvJkq2e8+cUpOuep9PPhmwaoJDTJVFfmehRNpQcFxQ0Xsq+HBCSbW06oJDRjv/2qjDoZ6pl01JHSHKiQ9OF7KgIVIqjPbLrQXIZ65C20lSWDL0g/MtFTQwKSyR05wcNvSk+XOhsiKz3jT3pSb0N7wYXe3HKyc5H0EYhZOV4y0SNnrTNGbwf1NrJ/iJKJnpp/RAtkeMPSiWnSlcu59vEy0aO6y5x8AwvXWcX/kt6bW06Sfk5SkzykMU5Pc3qOJ/t6RuvvpPTYTLaXlR4KkMzu59qpLr3jYkHwXVnpoYpXL+/ICaYVMjCkesuDTT2KJ6Tn22mrG8tQT+3fMSAZ3+42f7019SnOC7ojEz2uKtF9vWHJVcVPenCznubk627s65mzSVu2esSAZHs3YOjwG3RDajaxLOvRXuDB7H6uXYtMpYYO7Z6U4cxm5QI9ZOsjQz21f48ScOFmSTC0gGZo5knh/HjRR9Iz0dBlQPSQB8V3MjQh5MzHG3PRu2aO6JECkvm9pGHDrtMNTdtrO8f72sDqmXDKe/Kh965cIeYM+3s3oLmqC/0SgvH2BhOSbQZ8vocasXNKTx0JiDu32u5Sf++Sr+lH3Gb7Xx8QPZP0nVV3W9D/cQZ9T0935Lir+L53NdPBXePcjAZqpYKaa+ZI10zXgwFx7U5ks6kRnS4Lm67nouZzjaEec7/JBi6d6Kxb5tjLEXvvb3dL/Slh5aoj7zHS3YXPDos6y3iNnVol5ciIvaseCSCO3agdPix7zXLnzvcN6ljPMAv41T62N3omnwucfMJziq5d10sLybL1kW61tVB17ubmStN9Ku6GykEne7m3cIyRpgqtYFFzzTKcLexJT/3fIwWcvY/dZ+TlbhiRoeswTd9tmrH3NMuQqRZBU88Gqp4JUD3tr3rIUfWQg6qmZbe/ZTDLj0w8H/VO5Ms/xevPPtftBagq+3eoGOsoH9dRstcbY3tojM3BMVa6o88fGGOirWSwm9oV35WOrNa5/lIPBsRNPdRp374j03Yv9GR2ZbN4inm9FWQdgg5797Ff+emS5RSn2Zt0mF3ZTO3vkckOjd7rqf8MA+KuHuq85qihmQ7j4jT7Ignc6Kv5CRWTuu4tZPM+9gi5EAM1yz5J0lI38VXyZH9vIQM9DSQgjuvpdOKun2KK49i4o2r+4Elz4QUytCThPDYGgv5Ejgz1dDpx10vZG0JT3USrSxiqWfgoebL8RE7/9TR8FiH4tPTQzy2kTn/KEMdN+rOkXNPD5rmFrOmhA+L18Hr6rKdRAojXw+thoocExOvh9TDUgwHxeng9jPU0fhYu4PXwehjracKAeD28HqZ6MCBeD6+HsZ6mIRJAvB5eDwM9T4aECXg9vB7GejAgXg+vh7EeChCvh9fDRM9TAhCvh9fDUA8GxOvh9TDW83RIqIDXw+thrOeZGBCvh9fDSA8BiNfD62GqBwPi9fB6GOt5NlgCiNfD62Gg5/ngEAGvh9fDWA8GxOvh9TDWQwLi9fB6GOp5QQLi9fB6mOl5MThYwOvh9TDWIwHE6+H1MNLzEgPi9fB6mOrBgHg9vB7Gel4OogHi9fB6+qrn1aAgAa+H18NYjxgQr4fXw0wPBsTr4fUw1iMFxOvh9TDQ83pQoIDXw+thrAcD4vXwehjrkQDi9fB6GOlpxoB4Pbwepnog/h9RdoiIYC/aiwAAAABJRU5ErkJggg==">
+  <style>
+:root {
+  --bg1: #2a1250;
+  --bg2: #5b1f7a;
+  --bg3: #b8336a;
+  --card: rgba(255, 255, 255, 0.12);
+  --card-strong: rgba(255, 255, 255, 0.2);
+  --text: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.72);
+  --accent: #ffd60a;
+  --accent-2: #ff6b9d;
+  --good: #52e3a4;
+  --radius: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: #2a1250;
+  background: radial-gradient(120% 90% at 20% 0%, var(--bg2) 0%, var(--bg1) 55%, #170a2e 100%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--safe-top) + 12px) 16px calc(var(--safe-bottom) + 12px);
+}
+.screen.active { display: flex; }
+
+/* ---------- 首页 ---------- */
+#home { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+.home-head { text-align: center; margin-top: 4vh; }
+.logo {
+  margin: 0;
+  font-size: clamp(40px, 11vw, 64px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #fff6b0, #ffb703 60%, #fb8500);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 0 rgba(120, 20, 80, 0.8));
+}
+.logo span {
+  background: linear-gradient(180deg, #ffd6e8, #ff6b9d 60%, #d81b60);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.owner-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px 16px;
+  border: 2px solid #ff8fb8;
+  border-radius: 999px;
+  color: #ffd6e8;
+  background: rgba(255, 107, 157, 0.18);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  transform: rotate(-4deg);
+  box-shadow: 0 0 16px rgba(255, 107, 157, 0.35);
+}
+.owner-badge::before { content: "♥ "; color: #ff6b9d; }
+.owner-badge::after { content: " ♥"; color: #ff6b9d; }
+.tagline { color: var(--text-dim); margin: 12px 0 0; font-size: 14px; }
+
+.home-actions { margin: 24px 0 20px; }
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 17px;
+  font-weight: 700;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.btn:active { transform: scale(0.95); }
+.btn-primary {
+  background: linear-gradient(180deg, #ffe066, #ffb703);
+  color: #5a2a00;
+  box-shadow: 0 5px 0 #c77800, 0 10px 24px rgba(0, 0, 0, 0.3);
+  font-size: 20px;
+  padding: 14px 44px;
+}
+.btn-primary:active { box-shadow: 0 2px 0 #c77800; transform: translateY(3px); }
+.btn-secondary {
+  background: linear-gradient(180deg, #ff8fb8, #e83e8c);
+  box-shadow: 0 4px 0 #a3195b;
+}
+.btn-ghost {
+  background: var(--card);
+  font-size: 14px;
+  padding: 9px 18px;
+  font-weight: 600;
+}
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+.level-btn {
+  position: relative;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #8f5bff, #6a2fd6);
+  box-shadow: 0 4px 0 #3f1a8a;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.level-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #3f1a8a; }
+.level-btn .stars { font-size: 11px; letter-spacing: 1px; color: rgba(255, 255, 255, 0.25); }
+.level-btn .stars .on { color: var(--accent); }
+.level-btn.locked {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: default;
+}
+.level-btn.current { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.home-foot { display: flex; gap: 12px; margin: 24px 0 8px; }
+
+/* ---------- 游戏 HUD ---------- */
+.hud {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stat {
+  flex: 1;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 6px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.stat .label { font-size: 11px; color: var(--text-dim); }
+.stat .value { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat-moves { background: var(--card-strong); }
+.stat-moves .value { color: var(--accent); font-size: 24px; }
+.stat-moves.low .value { color: #ff5c7a; animation: pulse 0.8s infinite; }
+
+@keyframes pulse { 50% { transform: scale(1.15); } }
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border: 0;
+  border-radius: 12px;
+  background: var(--card);
+  display: grid;
+  place-items: center;
+}
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-btn .snd-on path:first-child, .icon-btn .snd-off path:first-child { fill: currentColor; }
+.icon-btn .snd-off { display: none; }
+.icon-btn.muted .snd-on { display: none; }
+.icon-btn.muted .snd-off { display: block; }
+
+.progress {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 18px;
+  margin: 10px 0 4px;
+}
+.progress-track {
+  position: absolute;
+  inset: 4px 0;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #52e3a4, #ffd60a);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.pstar {
+  position: absolute;
+  top: -3px;
+  transform: translateX(-50%);
+  font-size: 20px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: color 0.3s, transform 0.3s;
+}
+.pstar.on { color: var(--accent); transform: translateX(-50%) scale(1.2); }
+
+.goals {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  min-height: 40px;
+  margin: 4px 0 8px;
+  flex-wrap: wrap;
+}
+.goal {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  font-weight: 800;
+  font-size: 16px;
+}
+.goal canvas { width: 32px; height: 32px; }
+.goal.done { background: rgba(82, 227, 164, 0.3); }
+.goal.done .count::after { content: " ✓"; color: var(--good); }
+.goal-score { padding: 4px 14px; font-size: 14px; color: var(--text-dim); }
+.goal-score b { color: var(--text); }
+
+.board-wrap {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+#board {
+  display: block;
+  touch-action: none;
+  border-radius: var(--radius);
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  font-size: clamp(28px, 9vw, 48px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 3px 0 #b8336a, 0 6px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.25s cubic-bezier(.2,1.6,.4,1);
+}
+.toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* ---------- 弹窗 ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 4, 24, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+}
+.modal.show { display: flex; }
+.modal-card {
+  width: 100%;
+  max-width: 340px;
+  background: linear-gradient(180deg, #6b2fb3, #3d1873);
+  border-radius: 24px;
+  padding: 24px 20px 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation: pop 0.35s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } }
+.modal-card h2 { margin: 0 0 8px; font-size: 28px; }
+.modal-card p { color: var(--text-dim); margin: 8px 0 18px; line-height: 1.6; font-size: 15px; white-space: pre-line; }
+.modal-stars { font-size: 44px; letter-spacing: 6px; color: rgba(255, 255, 255, 0.2); }
+.modal-stars span { display: inline-block; transition: color 0.2s, transform 0.3s; }
+.modal-stars span.on { color: var(--accent); animation: starIn 0.4s cubic-bezier(.2,1.8,.4,1) both; }
+.modal-stars span:nth-child(2).on { animation-delay: 0.15s; }
+.modal-stars span:nth-child(3).on { animation-delay: 0.3s; }
+@keyframes starIn { from { transform: scale(0) rotate(-60deg); } }
+.modal-stars.hidden { display: none; }
+.modal-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.modal-buttons .btn { font-size: 16px; padding: 11px 22px; }
+.modal-buttons .btn-primary { font-size: 17px; padding: 12px 26px; }
+
+.help-list { text-align: left; margin: 0 0 16px; padding-left: 20px; color: var(--text-dim); line-height: 1.7; font-size: 14px; }
+.help-list b { color: var(--text); }
+
+</style>
+</head>
+<body>
+  <!-- 首页 / 选关 -->
+  <section id="home" class="screen active">
+    <header class="home-head">
+      <h1 class="logo">划水<span>消消</span></h1>
+      <div class="owner-badge">王羊奶专用</div>
+      <p class="tagline">交换相邻方块，三个连成一线就能消除</p>
+    </header>
+    <div class="home-actions">
+      <button id="btnContinue" class="btn btn-primary">开始游戏</button>
+    </div>
+    <div id="levelGrid" class="level-grid"></div>
+    <div class="home-foot">
+      <button id="btnHelp" class="btn btn-ghost">玩法说明</button>
+      <button id="btnSoundHome" class="btn btn-ghost">音效：开</button>
+    </div>
+  </section>
+
+  <!-- 游戏界面 -->
+  <section id="game" class="screen">
+    <div class="hud">
+      <button id="btnMenu" class="icon-btn" aria-label="返回选关">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="stat"><span class="label">关卡</span><span id="hudLevel" class="value">1</span></div>
+      <div class="stat stat-moves"><span class="label">剩余步数</span><span id="hudMoves" class="value">25</span></div>
+      <div class="stat"><span class="label">分数</span><span id="hudScore" class="value">0</span></div>
+      <button id="btnSound" class="icon-btn" aria-label="音效开关">
+        <svg class="snd-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+        <svg class="snd-off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
+      </button>
+    </div>
+    <div class="progress">
+      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+      <span class="pstar" id="pstar1">★</span>
+      <span class="pstar" id="pstar2">★</span>
+      <span class="pstar" id="pstar3">★</span>
+    </div>
+    <div id="goals" class="goals"></div>
+    <div id="boardWrap" class="board-wrap">
+      <canvas id="board"></canvas>
+      <div id="toast" class="toast"></div>
+    </div>
+  </section>
+
+  <!-- 弹窗 -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <h2 id="modalTitle">过关！</h2>
+      <div id="modalStars" class="modal-stars"><span>★</span><span>★</span><span>★</span></div>
+      <p id="modalText"></p>
+      <div id="modalButtons" class="modal-buttons"></div>
+    </div>
+  </div>
+
+  <script>
+/*
+ * 三消核心逻辑（纯逻辑，不依赖 DOM，可在 Node 中测试）
+ * 棋盘 grid[r][c] = tile | null
+ * tile = { id, color, special }，color: 0..n-1，彩虹球 color = -1
+ * special: null | 'row' | 'col' | 'bomb' | 'rainbow'
+ */
+(function (root) {
+  "use strict";
+
+  let nextId = 1;
+  function makeTile(color, special) {
+    return { id: nextId++, color: color, special: special || null };
+  }
+
+  function key(r, c) {
+    return r + "," + c;
+  }
+
+  function inBounds(grid, r, c) {
+    return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
+  }
+
+  function randInt(rng, n) {
+    return Math.floor(rng() * n);
+  }
+
+  // 找出所有横向/纵向连续 >=3 的同色段
+  function findRuns(grid) {
+    const rows = grid.length,
+      cols = grid[0].length,
+      runs = [];
+    for (let r = 0; r < rows; r++) {
+      let c = 0;
+      while (c < cols) {
+        const t = grid[r][c];
+        if (!t || t.color < 0) {
+          c++;
+          continue;
+        }
+        let e = c + 1;
+        while (e < cols && grid[r][e] && grid[r][e].color === t.color) e++;
+        if (e - c >= 3) {
+          const cells = [];
+          for (let k = c; k < e; k++) cells.push([r, k]);
+          runs.push({ dir: "h", color: t.color, cells: cells });
+        }
+        c = e;
+      }
+    }
+    for (let c = 0; c < cols; c++) {
+      let r = 0;
+      while (r < rows) {
+        const t = grid[r][c];
+        if (!t || t.color < 0) {
+          r++;
+          continue;
+        }
+        let e = r + 1;
+        while (e < rows && grid[e][c] && grid[e][c].color === t.color) e++;
+        if (e - r >= 3) {
+          const cells = [];
+          for (let k = r; k < e; k++) cells.push([k, c]);
+          runs.push({ dir: "v", color: t.color, cells: cells });
+        }
+        r = e;
+      }
+    }
+    return runs;
+  }
+
+  // 把共享格子的段合并成组（用于识别 L / T 形）
+  function groupRuns(runs) {
+    const parent = runs.map(function (_, i) {
+      return i;
+    });
+    function find(i) {
+      return parent[i] === i ? i : (parent[i] = find(parent[i]));
+    }
+    const owner = new Map();
+    runs.forEach(function (run, i) {
+      run.cells.forEach(function (p) {
+        const k = key(p[0], p[1]);
+        if (owner.has(k)) parent[find(i)] = find(owner.get(k));
+        else owner.set(k, i);
+      });
+    });
+    const groups = new Map();
+    runs.forEach(function (run, i) {
+      const root = find(i);
+      if (!groups.has(root))
+        groups.set(root, { runs: [], cells: new Map(), color: run.color });
+      const g = groups.get(root);
+      g.runs.push(run);
+      run.cells.forEach(function (p) {
+        g.cells.set(key(p[0], p[1]), p);
+      });
+    });
+    return Array.from(groups.values());
+  }
+
+  // 根据匹配组决定要消除的格子和要生成的特殊块
+  // preferred: 优先放置特殊块的位置（通常是玩家交换的两个格子）
+  function planMatches(grid, groups, preferred) {
+    const clear = new Map();
+    const creates = [];
+    groups.forEach(function (g) {
+      g.cells.forEach(function (p, k) {
+        clear.set(k, p);
+      });
+      let longest = g.runs[0];
+      g.runs.forEach(function (r) {
+        if (r.cells.length > longest.cells.length) longest = r;
+      });
+      const maxLen = longest.cells.length;
+      const hasH = g.runs.some(function (r) {
+        return r.dir === "h";
+      });
+      const hasV = g.runs.some(function (r) {
+        return r.dir === "v";
+      });
+
+      let special = null;
+      if (maxLen >= 5) special = "rainbow";
+      else if (hasH && hasV) special = "bomb";
+      else if (maxLen === 4) special = longest.dir === "h" ? "row" : "col";
+      if (!special) return;
+
+      let pos = null;
+      if (preferred) {
+        for (let i = 0; i < preferred.length; i++) {
+          const p = preferred[i];
+          if (p && g.cells.has(key(p.r, p.c))) {
+            pos = [p.r, p.c];
+            break;
+          }
+        }
+      }
+      if (!pos && special === "bomb") {
+        const count = new Map();
+        g.runs.forEach(function (run) {
+          run.cells.forEach(function (p) {
+            const k = key(p[0], p[1]);
+            count.set(k, (count.get(k) || 0) + 1);
+            if (count.get(k) >= 2 && !pos) pos = p;
+          });
+        });
+      }
+      if (!pos) pos = longest.cells[Math.floor(longest.cells.length / 2)];
+      creates.push({
+        r: pos[0],
+        c: pos[1],
+        color: special === "rainbow" ? -1 : g.color,
+        special: special,
+      });
+    });
+    return { clear: clear, creates: creates };
+  }
+
+  function mostCommonColor(grid) {
+    const count = {};
+    let best = 0,
+      bestN = -1;
+    grid.forEach(function (row) {
+      row.forEach(function (t) {
+        if (t && t.color >= 0) {
+          count[t.color] = (count[t.color] || 0) + 1;
+          if (count[t.color] > bestN) {
+            bestN = count[t.color];
+            best = t.color;
+          }
+        }
+      });
+    });
+    return best;
+  }
+
+  function cellsOfColor(grid, color) {
+    const out = [];
+    grid.forEach(function (row, r) {
+      row.forEach(function (t, c) {
+        if (t && t.color === color) out.push([r, c]);
+      });
+    });
+    return out;
+  }
+
+  // 特殊块被触发时影响的格子
+  function specialArea(grid, r, c, special) {
+    const rows = grid.length,
+      cols = grid[0].length,
+      out = [];
+    if (special === "row") {
+      for (let k = 0; k < cols; k++) out.push([r, k]);
+    } else if (special === "col") {
+      for (let k = 0; k < rows; k++) out.push([k, c]);
+    } else if (special === "bomb") {
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++)
+          if (inBounds(grid, r + dr, c + dc)) out.push([r + dr, c + dc]);
+    } else if (special === "rainbow") {
+      return cellsOfColor(grid, mostCommonColor(grid));
+    }
+    return out;
+  }
+
+  // 连锁触发：被消除格子里的特殊块会扩大消除范围
+  function expandSpecials(grid, clear) {
+    const queue = Array.from(clear.values());
+    const seen = new Set();
+    const triggered = [];
+    while (queue.length) {
+      const p = queue.shift();
+      const k = key(p[0], p[1]);
+      if (seen.has(k)) continue;
+      seen.add(k);
+      const t = grid[p[0]][p[1]];
+      if (!t || !t.special || t.consumed) continue;
+      t.consumed = true;
+      const area = specialArea(grid, p[0], p[1], t.special);
+      triggered.push({
+        r: p[0],
+        c: p[1],
+        special: t.special,
+        color: t.color,
+        area: area,
+      });
+      area.forEach(function (q) {
+        const qk = key(q[0], q[1]);
+        if (!clear.has(qk)) clear.set(qk, q);
+        queue.push(q);
+      });
+    }
+    return triggered;
+  }
+
+  // 交换后的特殊组合。p、q 为交换后两块所在位置，q 为玩家拖动方块的落点
+  // 返回 null 表示没有特殊组合，走普通匹配
+  function activateSwap(grid, p, q) {
+    const a = grid[p.r][p.c],
+      b = grid[q.r][q.c];
+    if (!a || !b) return null;
+    const clear = new Map();
+    const triggered = [];
+    function add(cell) {
+      clear.set(key(cell[0], cell[1]), cell);
+    }
+
+    const aR = a.special === "rainbow",
+      bR = b.special === "rainbow";
+    if (aR || bR) {
+      const rb = aR ? a : b,
+        other = aR ? b : a;
+      const rbPos = aR ? p : q,
+        otherPos = aR ? q : p;
+      rb.consumed = true;
+      add([rbPos.r, rbPos.c]);
+      if (aR && bR) {
+        // 两个彩虹球：清空全盘
+        b.consumed = true;
+        const all = [];
+        grid.forEach(function (row, r) {
+          row.forEach(function (t, c) {
+            if (t) {
+              all.push([r, c]);
+              add([r, c]);
+            }
+          });
+        });
+        triggered.push({
+          r: q.r,
+          c: q.c,
+          special: "rainbow",
+          color: -1,
+          area: all,
+        });
+      } else {
+        const targets = cellsOfColor(grid, other.color);
+        if (other.special) {
+          // 彩虹 + 特殊块：同色块全部变成该特殊块并引爆
+          targets.forEach(function (cell) {
+            const t = grid[cell[0]][cell[1]];
+            if (!t.special) {
+              t.special =
+                other.special === "row" || other.special === "col"
+                  ? Math.random() < 0.5
+                    ? "row"
+                    : "col"
+                  : other.special;
+            }
+          });
+        }
+        targets.forEach(add);
+        add([otherPos.r, otherPos.c]);
+        triggered.push({
+          r: rbPos.r,
+          c: rbPos.c,
+          special: "rainbow",
+          color: other.color,
+          area: targets,
+        });
+      }
+      return { clear: clear, triggered: triggered };
+    }
+
+    if (a.special && b.special) {
+      a.consumed = true;
+      b.consumed = true;
+      const rows = grid.length,
+        cols = grid[0].length;
+      const lineA = a.special === "row" || a.special === "col";
+      const lineB = b.special === "row" || b.special === "col";
+      const area = [];
+      if (lineA && lineB) {
+        for (let k = 0; k < cols; k++) area.push([q.r, k]);
+        for (let k = 0; k < rows; k++) area.push([k, q.c]);
+        triggered.push({
+          r: q.r,
+          c: q.c,
+          special: "row",
+          color: b.color,
+          area: area,
+        });
+        triggered.push({
+          r: q.r,
+          c: q.c,
+          special: "col",
+          color: b.color,
+          area: [],
+        });
+      } else if (!lineA && !lineB) {
+        for (let dr = -2; dr <= 2; dr++)
+          for (let dc = -2; dc <= 2; dc++)
+            if (inBounds(grid, q.r + dr, q.c + dc))
+              area.push([q.r + dr, q.c + dc]);
+        triggered.push({
+          r: q.r,
+          c: q.c,
+          special: "bomb",
+          color: b.color,
+          area: area,
+          big: true,
+        });
+      } else {
+        // 炸弹 + 直线：三行三列
+        for (let d = -1; d <= 1; d++) {
+          if (q.r + d >= 0 && q.r + d < rows) {
+            for (let k = 0; k < cols; k++) area.push([q.r + d, k]);
+            triggered.push({
+              r: q.r + d,
+              c: q.c,
+              special: "row",
+              color: b.color,
+              area: [],
+            });
+          }
+          if (q.c + d >= 0 && q.c + d < cols) {
+            for (let k = 0; k < rows; k++) area.push([k, q.c + d]);
+            triggered.push({
+              r: q.r,
+              c: q.c + d,
+              special: "col",
+              color: b.color,
+              area: [],
+            });
+          }
+        }
+        triggered[0].area = area;
+      }
+      area.forEach(add);
+      add([p.r, p.c]);
+      add([q.r, q.c]);
+      return { clear: clear, triggered: triggered };
+    }
+    return null;
+  }
+
+  // 重力下落，返回移动记录
+  function applyGravity(grid) {
+    const rows = grid.length,
+      cols = grid[0].length,
+      moves = [];
+    for (let c = 0; c < cols; c++) {
+      let write = rows - 1;
+      for (let r = rows - 1; r >= 0; r--) {
+        const t = grid[r][c];
+        if (t) {
+          if (write !== r) {
+            grid[write][c] = t;
+            grid[r][c] = null;
+            moves.push({ tile: t, c: c, fromR: r, toR: write });
+          }
+          write--;
+        }
+      }
+    }
+    return moves;
+  }
+
+  // 顶部补充新块，fromR 为负数表示从棋盘上方落下
+  function refill(grid, nColors, rng) {
+    const rows = grid.length,
+      cols = grid[0].length,
+      added = [];
+    for (let c = 0; c < cols; c++) {
+      let empty = 0;
+      for (let r = 0; r < rows; r++) if (!grid[r][c]) empty++;
+      for (let r = 0; r < rows; r++) {
+        if (!grid[r][c]) {
+          const t = makeTile(randInt(rng, nColors));
+          grid[r][c] = t;
+          added.push({ tile: t, c: c, fromR: r - empty, toR: r });
+        }
+      }
+    }
+    return added;
+  }
+
+  function sameColor(grid, r, c, color) {
+    return inBounds(grid, r, c) && grid[r][c] && grid[r][c].color === color;
+  }
+
+  function hasMatchAt(grid, r, c) {
+    const t = grid[r][c];
+    if (!t || t.color < 0) return false;
+    const col = t.color;
+    let h = 1,
+      v = 1;
+    for (let k = c - 1; sameColor(grid, r, k, col); k--) h++;
+    for (let k = c + 1; sameColor(grid, r, k, col); k++) h++;
+    for (let k = r - 1; sameColor(grid, k, c, col); k--) v++;
+    for (let k = r + 1; sameColor(grid, k, c, col); k++) v++;
+    return h >= 3 || v >= 3;
+  }
+
+  function swapCells(grid, a, b) {
+    const t = grid[a.r][a.c];
+    grid[a.r][a.c] = grid[b.r][b.c];
+    grid[b.r][b.c] = t;
+  }
+
+  // 找一个可行的交换（用于提示和判断是否需要洗牌）
+  function findPossibleMove(grid) {
+    const rows = grid.length,
+      cols = grid[0].length;
+    const dirs = [
+      [0, 1],
+      [1, 0],
+    ];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        for (let d = 0; d < dirs.length; d++) {
+          const r2 = r + dirs[d][0],
+            c2 = c + dirs[d][1];
+          if (!inBounds(grid, r2, c2)) continue;
+          const a = grid[r][c],
+            b = grid[r2][c2];
+          if (!a || !b) continue;
+          const pa = { r: r, c: c },
+            pb = { r: r2, c: c2 };
+          if (
+            a.special === "rainbow" ||
+            b.special === "rainbow" ||
+            (a.special && b.special)
+          )
+            return [pa, pb];
+          swapCells(grid, pa, pb);
+          const ok = hasMatchAt(grid, r, c) || hasMatchAt(grid, r2, c2);
+          swapCells(grid, pa, pb);
+          if (ok) return [pa, pb];
+        }
+      }
+    }
+    return null;
+  }
+
+  function fillNoMatches(grid, nColors, rng) {
+    const rows = grid.length,
+      cols = grid[0].length;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let color,
+          guard = 0;
+        do {
+          color = randInt(rng, nColors);
+          guard++;
+        } while (
+          guard < 50 &&
+          ((c >= 2 &&
+            sameColor(grid, r, c - 1, color) &&
+            sameColor(grid, r, c - 2, color)) ||
+            (r >= 2 &&
+              sameColor(grid, r - 1, c, color) &&
+              sameColor(grid, r - 2, c, color)))
+        );
+        grid[r][c] = makeTile(color);
+      }
+    }
+  }
+
+  function createBoard(rows, cols, nColors, rng) {
+    rng = rng || Math.random;
+    for (let tries = 0; tries < 200; tries++) {
+      const grid = [];
+      for (let r = 0; r < rows; r++) grid.push(new Array(cols).fill(null));
+      fillNoMatches(grid, nColors, rng);
+      if (findRuns(grid).length === 0 && findPossibleMove(grid)) return grid;
+    }
+    throw new Error("无法生成棋盘");
+  }
+
+  // 洗牌：保留方块对象（含特殊块），打乱位置直到无现成匹配且有可行步
+  function shuffle(grid, nColors, rng) {
+    rng = rng || Math.random;
+    const rows = grid.length,
+      cols = grid[0].length;
+    const tiles = [];
+    grid.forEach(function (row) {
+      row.forEach(function (t) {
+        if (t) tiles.push(t);
+      });
+    });
+    for (let tries = 0; tries < 300; tries++) {
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = randInt(rng, i + 1);
+        const tmp = tiles[i];
+        tiles[i] = tiles[j];
+        tiles[j] = tmp;
+      }
+      let k = 0;
+      for (let r = 0; r < rows; r++)
+        for (let c = 0; c < cols; c++) grid[r][c] = tiles[k++];
+      if (findRuns(grid).length === 0 && findPossibleMove(grid)) return;
+    }
+    // 实在洗不出来就重新上色普通块
+    fillNoMatches(grid, nColors, rng);
+  }
+
+  const api = {
+    makeTile: makeTile,
+    key: key,
+    inBounds: inBounds,
+    findRuns: findRuns,
+    groupRuns: groupRuns,
+    planMatches: planMatches,
+    specialArea: specialArea,
+    expandSpecials: expandSpecials,
+    activateSwap: activateSwap,
+    applyGravity: applyGravity,
+    refill: refill,
+    hasMatchAt: hasMatchAt,
+    swapCells: swapCells,
+    findPossibleMove: findPossibleMove,
+    createBoard: createBoard,
+    shuffle: shuffle,
+    mostCommonColor: mostCommonColor,
+  };
+  root.M3 = api;
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+  <script>
+/* 用 WebAudio 合成的音效，无需音频文件。iOS 需在用户首次触摸后 unlock() */
+(function (root) {
+  "use strict";
+
+  const Sfx = {
+    ctx: null,
+    master: null,
+    muted: false,
+
+    unlock: function () {
+      if (!this.ctx) {
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AC();
+          this.master = this.ctx.createGain();
+          this.master.gain.value = 0.9;
+          this.master.connect(this.ctx.destination);
+        } catch (e) {
+          this.ctx = null;
+          return;
+        }
+      }
+      if (this.ctx.state === "suspended") this.ctx.resume();
+    },
+
+    ready: function () {
+      return this.ctx && !this.muted;
+    },
+
+    tone: function (freq, dur, type, vol, slide, when) {
+      if (!this.ready()) return;
+      const ctx = this.ctx,
+        t0 = ctx.currentTime + (when || 0);
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(freq, t0);
+      if (slide)
+        osc.frequency.exponentialRampToValueAtTime(
+          Math.max(40, freq + slide),
+          t0 + dur,
+        );
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol || 0.15, t0 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g);
+      g.connect(this.master);
+      osc.start(t0);
+      osc.stop(t0 + dur + 0.02);
+    },
+
+    noise: function (dur, vol, freq) {
+      if (!this.ready()) return;
+      const ctx = this.ctx,
+        t0 = ctx.currentTime;
+      const len = Math.floor(ctx.sampleRate * dur);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++)
+        data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(freq || 1200, t0);
+      filter.frequency.exponentialRampToValueAtTime(200, t0 + dur);
+      const g = ctx.createGain();
+      g.gain.value = vol || 0.3;
+      src.connect(filter);
+      filter.connect(g);
+      g.connect(this.master);
+      src.start(t0);
+    },
+
+    swap: function () {
+      this.tone(600, 0.08, "triangle", 0.08, 200);
+    },
+    select: function () {
+      this.tone(880, 0.05, "sine", 0.06);
+    },
+    invalid: function () {
+      this.tone(220, 0.09, "square", 0.05, -40);
+      this.tone(180, 0.12, "square", 0.05, -40, 0.09);
+    },
+    match: function (combo) {
+      const steps = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16];
+      const semi = steps[Math.min(combo - 1, steps.length - 1)];
+      const f = 523.25 * Math.pow(2, semi / 12);
+      this.tone(f, 0.16, "sine", 0.16);
+      this.tone(f * 2, 0.12, "triangle", 0.05, 0, 0.03);
+    },
+    create: function () {
+      this.tone(660, 0.1, "triangle", 0.1);
+      this.tone(990, 0.18, "triangle", 0.1, 0, 0.08);
+    },
+    blast: function (big) {
+      this.noise(big ? 0.6 : 0.35, big ? 0.45 : 0.3, big ? 900 : 1600);
+      this.tone(big ? 120 : 200, 0.3, "sine", 0.2, -80);
+    },
+    zap: function () {
+      this.tone(1400, 0.25, "sawtooth", 0.04, -1100);
+      this.noise(0.2, 0.15, 3000);
+    },
+    shuffle: function () {
+      for (let i = 0; i < 6; i++)
+        this.tone(400 + i * 90, 0.06, "triangle", 0.06, 0, i * 0.05);
+    },
+    win: function () {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+        this.tone(f, 0.3, "triangle", 0.14, 0, i * 0.12),
+      );
+      this.tone(1318.5, 0.6, "sine", 0.1, 0, 0.5);
+    },
+    lose: function () {
+      [392, 349.23, 311.13, 261.63].forEach((f, i) =>
+        this.tone(f, 0.35, "triangle", 0.12, 0, i * 0.18),
+      );
+    },
+    tick: function () {
+      this.tone(1200, 0.04, "sine", 0.05);
+    },
+  };
+
+  root.Sfx = Sfx;
+})(window);
+
+</script>
+  <script>
+/* 方块绘制：用 Canvas 矢量画出原创的糖果造型，预渲染成贴图提高性能 */
+(function (root) {
+  "use strict";
+
+  // 每种颜色：主色、亮色、暗色，以及造型
+  const PALETTE = [
+    { base: "#ff4d6d", light: "#ffb3c1", dark: "#a4133c", shape: "heart" },
+    { base: "#ff9f1c", light: "#ffd8a8", dark: "#c45500", shape: "square" },
+    { base: "#ffd60a", light: "#fff3b0", dark: "#b88a00", shape: "star" },
+    { base: "#38d39f", light: "#b7f5dc", dark: "#127a58", shape: "hex" },
+    { base: "#4cc9f0", light: "#c4f1ff", dark: "#1767a3", shape: "diamond" },
+    { base: "#a25cff", light: "#dcc2ff", dark: "#5a189a", shape: "drop" },
+  ];
+
+  function shapePath(ctx, shape, cx, cy, R) {
+    ctx.beginPath();
+    if (shape === "heart") {
+      const s = R * 1.05;
+      ctx.moveTo(cx, cy + s * 0.85);
+      ctx.bezierCurveTo(
+        cx - s * 1.25,
+        cy + s * 0.05,
+        cx - s * 0.95,
+        cy - s * 0.95,
+        cx,
+        cy - s * 0.4,
+      );
+      ctx.bezierCurveTo(
+        cx + s * 0.95,
+        cy - s * 0.95,
+        cx + s * 1.25,
+        cy + s * 0.05,
+        cx,
+        cy + s * 0.85,
+      );
+    } else if (shape === "square") {
+      const s = R * 0.86,
+        rr = R * 0.32;
+      roundRect(ctx, cx - s, cy - s, s * 2, s * 2, rr);
+    } else if (shape === "star") {
+      for (let i = 0; i < 10; i++) {
+        const a = -Math.PI / 2 + (i * Math.PI) / 5;
+        const rad = i % 2 === 0 ? R * 1.05 : R * 0.5;
+        const x = cx + Math.cos(a) * rad,
+          y = cy + Math.sin(a) * rad + R * 0.08;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    } else if (shape === "hex") {
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI / 6 + (i * Math.PI) / 3;
+        const x = cx + Math.cos(a) * R * 0.98,
+          y = cy + Math.sin(a) * R * 0.98;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+    } else if (shape === "diamond") {
+      ctx.moveTo(cx, cy - R * 1.02);
+      ctx.lineTo(cx + R * 0.85, cy);
+      ctx.lineTo(cx, cy + R * 1.02);
+      ctx.lineTo(cx - R * 0.85, cy);
+      ctx.closePath();
+    } else if (shape === "drop") {
+      ctx.moveTo(cx, cy - R * 1.05);
+      ctx.bezierCurveTo(
+        cx + R * 0.5,
+        cy - R * 0.45,
+        cx + R * 0.92,
+        cy + R * 0.05,
+        cx + R * 0.92,
+        cy + R * 0.3,
+      );
+      ctx.arc(cx, cy + R * 0.3, R * 0.92, 0, Math.PI, false);
+      ctx.bezierCurveTo(
+        cx - R * 0.92,
+        cy + R * 0.05,
+        cx - R * 0.5,
+        cy - R * 0.45,
+        cx,
+        cy - R * 1.05,
+      );
+      ctx.closePath();
+    } else {
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    }
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function drawGem(ctx, colorIdx, special, size) {
+    const cx = size / 2,
+      cy = size / 2,
+      R = size * 0.38;
+
+    if (special === "rainbow") {
+      drawRainbow(ctx, cx, cy, R);
+      return;
+    }
+    const p = PALETTE[colorIdx];
+
+    if (special === "bomb") {
+      // 外圈光晕
+      const glow = ctx.createRadialGradient(cx, cy, R * 0.6, cx, cy, R * 1.35);
+      glow.addColorStop(0, "rgba(255,255,255,0.55)");
+      glow.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, size, size);
+    }
+
+    // 阴影
+    ctx.save();
+    ctx.translate(0, size * 0.035);
+    shapePath(ctx, p.shape, cx, cy, R);
+    ctx.fillStyle = "rgba(0,0,0,0.28)";
+    ctx.fill();
+    ctx.restore();
+
+    // 主体渐变
+    shapePath(ctx, p.shape, cx, cy, R);
+    const grad = ctx.createLinearGradient(cx - R, cy - R, cx + R * 0.6, cy + R);
+    grad.addColorStop(0, p.light);
+    grad.addColorStop(0.45, p.base);
+    grad.addColorStop(1, p.dark);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.lineWidth = Math.max(1, size * 0.03);
+    ctx.strokeStyle = p.dark;
+    ctx.stroke();
+
+    // 条纹（直线特殊块）
+    if (special === "row" || special === "col") {
+      ctx.save();
+      shapePath(ctx, p.shape, cx, cy, R);
+      ctx.clip();
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      const w = R * 0.22;
+      for (let i = -1; i <= 1; i++) {
+        if (special === "row")
+          ctx.fillRect(cx - R * 1.2, cy + i * R * 0.55 - w / 2, R * 2.4, w);
+        else ctx.fillRect(cx + i * R * 0.55 - w / 2, cy - R * 1.2, w, R * 2.4);
+      }
+      ctx.restore();
+    }
+
+    // 高光
+    ctx.save();
+    shapePath(ctx, p.shape, cx, cy, R);
+    ctx.clip();
+    const hl = ctx.createRadialGradient(
+      cx - R * 0.35,
+      cy - R * 0.45,
+      0,
+      cx - R * 0.35,
+      cy - R * 0.45,
+      R * 0.75,
+    );
+    hl.addColorStop(0, "rgba(255,255,255,0.85)");
+    hl.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = hl;
+    ctx.fillRect(0, 0, size, size);
+    ctx.restore();
+
+    if (special === "bomb") {
+      // 包装纸效果：白色描边 + 中心小火花
+      shapePath(ctx, p.shape, cx, cy, R * 1.12);
+      ctx.lineWidth = size * 0.06;
+      ctx.strokeStyle = "rgba(255,255,255,0.95)";
+      ctx.setLineDash([size * 0.09, size * 0.06]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      sparkle(ctx, cx, cy, R * 0.42, "#ffffff");
+    }
+  }
+
+  function sparkle(ctx, x, y, r, color) {
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i * Math.PI) / 4;
+      const rad = i % 2 === 0 ? r : r * 0.3;
+      const px = x + Math.cos(a) * rad,
+        py = y + Math.sin(a) * rad;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  function drawRainbow(ctx, cx, cy, R) {
+    ctx.beginPath();
+    ctx.arc(cx, cy + R * 0.08, R, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.3)";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    const g = ctx.createRadialGradient(
+      cx - R * 0.3,
+      cy - R * 0.3,
+      R * 0.1,
+      cx,
+      cy,
+      R,
+    );
+    g.addColorStop(0, "#5e4b8b");
+    g.addColorStop(1, "#1a1033");
+    ctx.fillStyle = g;
+    ctx.fill();
+
+    // 彩色小糖粒
+    for (let i = 0; i < 12; i++) {
+      const a = (i * Math.PI * 2) / 12 + 0.2;
+      const rad = i % 2 ? R * 0.62 : R * 0.35;
+      ctx.beginPath();
+      ctx.arc(
+        cx + Math.cos(a) * rad,
+        cy + Math.sin(a) * rad,
+        R * 0.13,
+        0,
+        Math.PI * 2,
+      );
+      ctx.fillStyle = PALETTE[i % PALETTE.length].base;
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.lineWidth = R * 0.1;
+    ctx.strokeStyle = "rgba(255,255,255,0.6)";
+    ctx.stroke();
+
+    const hl = ctx.createRadialGradient(
+      cx - R * 0.4,
+      cy - R * 0.45,
+      0,
+      cx - R * 0.4,
+      cy - R * 0.45,
+      R * 0.6,
+    );
+    hl.addColorStop(0, "rgba(255,255,255,0.7)");
+    hl.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = hl;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 预渲染贴图缓存：key = color|special
+  let cache = new Map();
+  let cacheSize = 0;
+
+  function getSprite(color, special, sizePx) {
+    sizePx = Math.max(8, Math.round(sizePx));
+    if (sizePx !== cacheSize) {
+      cache = new Map();
+      cacheSize = sizePx;
+    }
+    const k = color + "|" + (special || "");
+    let cv = cache.get(k);
+    if (!cv) {
+      cv = document.createElement("canvas");
+      cv.width = cv.height = sizePx;
+      drawGem(cv.getContext("2d"), color, special, sizePx);
+      cache.set(k, cv);
+    }
+    return cv;
+  }
+
+  function drawIcon(canvas, color, special) {
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const cssSize = canvas.clientWidth || 32;
+    canvas.width = canvas.height = Math.round(cssSize * dpr);
+    const ctx = canvas.getContext("2d");
+    drawGem(ctx, color, special || null, canvas.width);
+  }
+
+  root.Render = {
+    PALETTE: PALETTE,
+    getSprite: getSprite,
+    drawIcon: drawIcon,
+    roundRect: roundRect,
+  };
+})(window);
+
+</script>
+  <script>
+/* 游戏主程序：界面、动画、输入、关卡与存档 */
+(function () {
+  "use strict";
+
+  const ROWS = 8,
+    COLS = 8,
+    TOTAL_LEVELS = 30;
+  const STORE_KEY = "bingfen-progress-v1";
+  const COLOR_NAMES = ["红心", "橙糖", "黄星", "绿宝石", "蓝钻", "紫水滴"];
+  const STAR_RATIOS = [1, 1.4, 1.8];
+
+  const $ = function (s) {
+    return document.querySelector(s);
+  };
+
+  // ---------------- 存档（localStorage 不可用时静默降级） ----------------
+  const Save = {
+    data: { unlocked: 1, stars: {}, best: {}, muted: false },
+    load: function () {
+      try {
+        const s = localStorage.getItem(STORE_KEY);
+        if (s) Object.assign(this.data, JSON.parse(s));
+      } catch (e) {
+        /* 隐私模式等情况下忽略 */
+      }
+    },
+    save: function () {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(this.data));
+      } catch (e) {
+        /* 忽略 */
+      }
+    },
+  };
+
+  // ---------------- 关卡配置（按关卡号生成，难度逐步上升） ----------------
+  function levelConfig(n) {
+    const colors = n <= 4 ? 5 : 6;
+    const moves = Math.max(16, 26 - Math.floor((n - 1) / 3));
+    const perMove = (colors === 5 ? 70 : 55) + n * 2;
+    const target = Math.round((moves * perMove) / 50) * 50;
+    const goals = [];
+    if (n >= 3)
+      goals.push({
+        color: (n * 2) % colors,
+        count: Math.round(moves * (0.5 + n * 0.012)),
+      });
+    if (n >= 10)
+      goals.push({
+        color: (n * 2 + 3) % colors,
+        count: Math.round(moves * (0.35 + n * 0.01)),
+      });
+    return { n: n, colors: colors, moves: moves, target: target, goals: goals };
+  }
+
+  // ---------------- 补间动画 ----------------
+  const Ease = {
+    linear: function (t) {
+      return t;
+    },
+    outQuad: function (t) {
+      return 1 - (1 - t) * (1 - t);
+    },
+    inOutQuad: function (t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    },
+    outBack: function (t) {
+      const c1 = 1.70158,
+        c3 = c1 + 1;
+      return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+    },
+    inBack: function (t) {
+      return 2.70158 * t * t * t - 1.70158 * t * t;
+    },
+    // 加速下落后轻微回弹
+    fall: function (t) {
+      if (t < 0.8) {
+        const u = t / 0.8;
+        return u * u;
+      }
+      const u = (t - 0.8) / 0.2;
+      return 1 - Math.sin(u * Math.PI) * 0.06;
+    },
+  };
+
+  let tweens = [];
+  function tween(obj, to, dur, ease, delay) {
+    return new Promise(function (resolve) {
+      tweens.push({
+        obj: obj,
+        to: to,
+        from: null,
+        dur: dur,
+        ease: ease || Ease.outQuad,
+        delay: delay || 0,
+        t: 0,
+        resolve: resolve,
+      });
+    });
+  }
+  function updateTweens(dt) {
+    for (let i = tweens.length - 1; i >= 0; i--) {
+      const tw = tweens[i];
+      tw.t += dt;
+      if (tw.t < tw.delay) continue;
+      if (!tw.from) {
+        tw.from = {};
+        for (const k in tw.to) tw.from[k] = tw.obj[k];
+      }
+      const p = Math.min(1, (tw.t - tw.delay) / tw.dur);
+      const e = tw.ease(p);
+      for (const k in tw.to)
+        tw.obj[k] = tw.from[k] + (tw.to[k] - tw.from[k]) * e;
+      if (p >= 1) {
+        for (const k in tw.to) tw.obj[k] = tw.to[k];
+        tweens.splice(i, 1);
+        tw.resolve();
+      }
+    }
+  }
+  function sleep(sec) {
+    return tween({ v: 0 }, { v: 1 }, sec, Ease.linear);
+  }
+
+  // ---------------- 游戏状态 ----------------
+  const G = {
+    level: null,
+    grid: null,
+    score: 0,
+    shownScore: 0,
+    movesLeft: 0,
+    collected: [],
+    busy: false,
+    over: false,
+    playing: false,
+    selected: null,
+    hint: null,
+    idle: 0,
+    dying: [],
+    particles: [],
+    beams: [],
+    flashes: [],
+    zaps: [],
+    floats: [],
+    shake: 0,
+  };
+
+  // ---------------- 画布尺寸 ----------------
+  const canvas = $("#board");
+  const ctx = canvas.getContext("2d");
+  let boardPx = 0,
+    cell = 0,
+    pad = 0,
+    dpr = 1;
+
+  function resize() {
+    const wrap = $("#boardWrap");
+    const size = Math.floor(Math.min(wrap.clientWidth, wrap.clientHeight, 640));
+    if (size <= 0) return;
+    dpr = Math.min(3, window.devicePixelRatio || 1);
+    canvas.style.width = canvas.style.height = size + "px";
+    canvas.width = canvas.height = Math.round(size * dpr);
+    boardPx = size;
+    pad = size * 0.025;
+    cell = (size - pad * 2) / COLS;
+  }
+
+  function cellCenter(r, c) {
+    return { x: pad + (c + 0.5) * cell, y: pad + (r + 0.5) * cell };
+  }
+
+  // ---------------- 特效 ----------------
+  function spawnParticles(r, c, color, n) {
+    const p = cellCenter(r, c);
+    const pal = Render.PALETTE;
+    for (let i = 0; i < (n || 7); i++) {
+      const a = Math.random() * Math.PI * 2,
+        sp = cell * (2 + Math.random() * 4);
+      G.particles.push({
+        x: p.x,
+        y: p.y,
+        vx: Math.cos(a) * sp,
+        vy: Math.sin(a) * sp - cell * 2,
+        life: 0.5 + Math.random() * 0.3,
+        max: 0.8,
+        size: cell * (0.06 + Math.random() * 0.08),
+        color:
+          color >= 0
+            ? pal[color].base
+            : pal[Math.floor(Math.random() * pal.length)].base,
+      });
+    }
+  }
+
+  function floatText(r, c, text, combo) {
+    const p = cellCenter(r, c);
+    G.floats.push({
+      x: p.x,
+      y: p.y,
+      text: text,
+      life: 0.9,
+      max: 0.9,
+      scale: 1 + Math.min(combo - 1, 4) * 0.15,
+    });
+  }
+
+  let toastTimer = 0;
+  function toast(text, ms) {
+    const el = $("#toast");
+    el.textContent = text;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      el.classList.remove("show");
+    }, ms || 900);
+  }
+
+  function updateFx(dt) {
+    G.particles = G.particles.filter(function (p) {
+      p.life -= dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += cell * 14 * dt;
+      return p.life > 0;
+    });
+    [G.beams, G.flashes, G.zaps, G.floats].forEach(function (list) {
+      for (let i = list.length - 1; i >= 0; i--) {
+        list[i].life -= dt;
+        if (list[i].life <= 0) list.splice(i, 1);
+      }
+    });
+    G.floats.forEach(function (f) {
+      f.y -= cell * 1.2 * dt;
+    });
+    G.shake = Math.max(0, G.shake - dt * 3);
+  }
+
+  // ---------------- 绘制 ----------------
+  function drawTile(t, time) {
+    if (!t || t.s <= 0.01 || t.a <= 0.01) return;
+    let s = t.s;
+    if (G.hint && (G.hint[0] === t || G.hint[1] === t))
+      s *= 1 + 0.07 * Math.sin(time * 9);
+    if (G.selected && G.grid[G.selected.r][G.selected.c] === t)
+      s *= 1.1 + 0.03 * Math.sin(time * 10);
+    const spr = Render.getSprite(t.color, t.special, cell * dpr);
+    const size = cell * s;
+    const x = pad + (t.x + 0.5) * cell - size / 2;
+    const y = pad + (t.y + 0.5) * cell - size / 2;
+    ctx.globalAlpha = Math.max(0, Math.min(1, t.a));
+    ctx.drawImage(spr, x, y, size, size);
+    ctx.globalAlpha = 1;
+  }
+
+  function draw(time) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, boardPx, boardPx);
+    if (G.shake > 0)
+      ctx.translate(
+        (Math.random() - 0.5) * G.shake * cell * 0.25,
+        (Math.random() - 0.5) * G.shake * cell * 0.25,
+      );
+
+    // 棋盘底
+    ctx.beginPath();
+    Render.roundRect(ctx, 0, 0, boardPx, boardPx, boardPx * 0.04);
+    ctx.fillStyle = "rgba(20, 8, 45, 0.55)";
+    ctx.fill();
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        ctx.beginPath();
+        Render.roundRect(
+          ctx,
+          pad + c * cell + 1.5,
+          pad + r * cell + 1.5,
+          cell - 3,
+          cell - 3,
+          cell * 0.18,
+        );
+        ctx.fillStyle =
+          (r + c) % 2 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.12)";
+        ctx.fill();
+      }
+    }
+    if (G.selected) {
+      ctx.beginPath();
+      Render.roundRect(
+        ctx,
+        pad + G.selected.c * cell + 2,
+        pad + G.selected.r * cell + 2,
+        cell - 4,
+        cell - 4,
+        cell * 0.18,
+      );
+      ctx.fillStyle = "rgba(255, 214, 10, 0.28)";
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = "rgba(255, 214, 10, 0.9)";
+      ctx.stroke();
+    }
+
+    if (!G.grid) return;
+
+    // 方块（裁剪到棋盘内，新方块从上方滑入）
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(pad, pad, cell * COLS, cell * ROWS);
+    ctx.clip();
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++) drawTile(G.grid[r][c], time);
+    G.dying.forEach(function (t) {
+      drawTile(t, time);
+    });
+    ctx.restore();
+
+    // 直线光束
+    G.beams.forEach(function (b) {
+      const k = b.life / b.max;
+      const ctr = cellCenter(b.r, b.c);
+      const th = cell * (0.25 + 0.6 * k);
+      ctx.globalAlpha = k;
+      const grad =
+        b.dir === "row"
+          ? ctx.createLinearGradient(0, ctr.y - th / 2, 0, ctr.y + th / 2)
+          : ctx.createLinearGradient(ctr.x - th / 2, 0, ctr.x + th / 2, 0);
+      grad.addColorStop(0, "rgba(255,255,255,0)");
+      grad.addColorStop(0.5, "rgba(255,255,255,1)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = grad;
+      if (b.dir === "row") ctx.fillRect(pad, ctr.y - th / 2, cell * COLS, th);
+      else ctx.fillRect(ctr.x - th / 2, pad, th, cell * ROWS);
+      ctx.globalAlpha = 1;
+    });
+
+    // 炸弹冲击波
+    G.flashes.forEach(function (f) {
+      const k = f.life / f.max;
+      const ctr = cellCenter(f.r, f.c);
+      ctx.beginPath();
+      ctx.arc(ctr.x, ctr.y, cell * f.rad * (1.2 - k * 0.7), 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 240, 200," + 0.55 * k + ")";
+      ctx.fill();
+      ctx.lineWidth = cell * 0.12 * k;
+      ctx.strokeStyle = "rgba(255,255,255," + k + ")";
+      ctx.stroke();
+    });
+
+    // 彩虹球闪电
+    G.zaps.forEach(function (z) {
+      const k = z.life / z.max;
+      const from = cellCenter(z.r, z.c);
+      ctx.lineWidth = cell * 0.08;
+      ctx.strokeStyle = "rgba(255,255,255," + k + ")";
+      ctx.shadowColor = "#ffd6ff";
+      ctx.shadowBlur = 10;
+      z.targets.forEach(function (p) {
+        const to = cellCenter(p[0], p[1]);
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        const mx = (from.x + to.x) / 2 + (Math.random() - 0.5) * cell * 0.6;
+        const my = (from.y + to.y) / 2 + (Math.random() - 0.5) * cell * 0.6;
+        ctx.lineTo(mx, my);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
+      });
+      ctx.shadowBlur = 0;
+    });
+
+    G.particles.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life / p.max);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    G.floats.forEach(function (f) {
+      const k = f.life / f.max;
+      ctx.globalAlpha = Math.min(1, k * 2);
+      ctx.font =
+        "900 " +
+        Math.round(cell * 0.5 * f.scale) +
+        'px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "rgba(90, 20, 70, 0.9)";
+      ctx.strokeText(f.text, f.x, f.y);
+      ctx.fillStyle = "#fff6b0";
+      ctx.fillText(f.text, f.x, f.y);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  // ---------------- 主循环 ----------------
+  let lastTime = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    updateTweens(dt);
+    updateFx(dt);
+    if (G.playing) {
+      // 分数滚动
+      if (G.shownScore !== G.score) {
+        G.shownScore += (G.score - G.shownScore) * Math.min(1, dt * 10);
+        if (Math.abs(G.score - G.shownScore) < 1) G.shownScore = G.score;
+        $("#hudScore").textContent = Math.round(G.shownScore);
+      }
+      // 闲置 5 秒提示
+      if (!G.busy && !G.over && !G.hint) {
+        G.idle += dt;
+        if (G.idle > 5) {
+          const mv = M3.findPossibleMove(G.grid);
+          if (mv) G.hint = [G.grid[mv[0].r][mv[0].c], G.grid[mv[1].r][mv[1].c]];
+        }
+      }
+      draw(now / 1000);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function resetIdle() {
+    G.idle = 0;
+    G.hint = null;
+  }
+
+  // ---------------- 核心流程 ----------------
+  function placeTilesInstant() {
+    G.grid.forEach(function (row, r) {
+      row.forEach(function (t, c) {
+        t.x = c;
+        t.y = r;
+        t.s = 1;
+        t.a = 1;
+      });
+    });
+  }
+
+  function animSwap(a, b) {
+    const ta = G.grid[a.r][a.c],
+      tb = G.grid[b.r][b.c];
+    M3.swapCells(G.grid, a, b);
+    return Promise.all([
+      tween(ta, { x: b.c, y: b.r }, 0.16, Ease.inOutQuad),
+      tween(tb, { x: a.c, y: a.r }, 0.16, Ease.inOutQuad),
+    ]);
+  }
+
+  async function attemptSwap(a, b) {
+    if (G.busy || G.over) return;
+    if (!M3.inBounds(G.grid, b.r, b.c)) return;
+    G.busy = true;
+    G.selected = null;
+    resetIdle();
+    const session = G.session;
+    Sfx.swap();
+    await animSwap(a, b);
+    if (session !== G.session) return;
+
+    // a 位置现在是被换过来的方块，b 是玩家拖动的方块
+    const activation = M3.activateSwap(G.grid, a, b);
+    if (!activation && M3.findRuns(G.grid).length === 0) {
+      Sfx.invalid();
+      await animSwap(a, b);
+      if (session !== G.session) return;
+      G.busy = false;
+      return;
+    }
+    G.movesLeft--;
+    updateHud();
+    await cascade(activation, [b, a], session);
+    if (session !== G.session) return;
+    G.busy = false;
+    await checkEnd(session);
+  }
+
+  async function cascade(initial, preferred, session) {
+    let combo = 0;
+    let pending = initial;
+    while (true) {
+      let clear,
+        creates = [],
+        triggered = [];
+      if (pending) {
+        clear = pending.clear;
+        triggered = pending.triggered || [];
+        pending = null;
+      } else {
+        const groups = M3.groupRuns(M3.findRuns(G.grid));
+        if (!groups.length) break;
+        const plan = M3.planMatches(G.grid, groups, preferred);
+        clear = plan.clear;
+        creates = plan.creates;
+      }
+      preferred = null;
+      triggered = triggered.concat(M3.expandSpecials(G.grid, clear));
+      combo++;
+      await animClear(clear, creates, triggered, combo);
+      if (session !== G.session) return;
+      const moves = M3.applyGravity(G.grid);
+      const added = M3.refill(G.grid, G.level.colors, Math.random);
+      await animFall(moves, added);
+      if (session !== G.session) return;
+    }
+    if (combo >= 3) {
+      const words = [
+        "",
+        "",
+        "",
+        "漂亮！",
+        "太棒了！",
+        "超级连击！",
+        "无敌了！",
+      ];
+      toast(words[Math.min(combo, words.length - 1)]);
+    }
+    if (!M3.findPossibleMove(G.grid)) await doShuffle(session);
+  }
+
+  async function animClear(clear, creates, triggered, combo) {
+    let hasBomb = false,
+      big = false;
+    triggered.forEach(function (tr) {
+      if (tr.special === "row" || tr.special === "col") {
+        G.beams.push({
+          r: tr.r,
+          c: tr.c,
+          dir: tr.special,
+          life: 0.45,
+          max: 0.45,
+        });
+      } else if (tr.special === "bomb") {
+        hasBomb = true;
+        big = big || !!tr.big;
+        G.flashes.push({
+          r: tr.r,
+          c: tr.c,
+          rad: tr.big ? 2.8 : 1.8,
+          life: 0.4,
+          max: 0.4,
+        });
+        G.shake = Math.max(G.shake, tr.big ? 1 : 0.6);
+      } else if (tr.special === "rainbow") {
+        G.zaps.push({
+          r: tr.r,
+          c: tr.c,
+          targets: tr.area,
+          life: 0.5,
+          max: 0.5,
+        });
+        G.shake = Math.max(G.shake, 0.5);
+      }
+    });
+    if (hasBomb) Sfx.blast(big);
+    else if (triggered.length) Sfx.zap();
+    Sfx.match(combo);
+
+    const gained =
+      clear.size * 20 * combo + creates.length * 100 + triggered.length * 60;
+    G.score += gained;
+
+    let sr = 0,
+      sc = 0;
+    clear.forEach(function (p) {
+      sr += p[0];
+      sc += p[1];
+    });
+    floatText(sr / clear.size, sc / clear.size, "+" + gained, combo);
+
+    const promises = [];
+    clear.forEach(function (p) {
+      const t = G.grid[p[0]][p[1]];
+      if (!t) return;
+      G.grid[p[0]][p[1]] = null;
+      if (t.color >= 0) G.collected[t.color] = (G.collected[t.color] || 0) + 1;
+      spawnParticles(p[0], p[1], t.color);
+      G.dying.push(t);
+      promises.push(
+        tween(t, { s: 0, a: 0 }, 0.24, Ease.inBack).then(function () {
+          const i = G.dying.indexOf(t);
+          if (i >= 0) G.dying.splice(i, 1);
+        }),
+      );
+    });
+
+    creates.forEach(function (cr) {
+      const nt = M3.makeTile(cr.color, cr.special);
+      nt.x = cr.c;
+      nt.y = cr.r;
+      nt.s = 0;
+      nt.a = 1;
+      G.grid[cr.r][cr.c] = nt;
+      promises.push(tween(nt, { s: 1 }, 0.32, Ease.outBack, 0.12));
+    });
+    if (creates.length) {
+      Sfx.create();
+      if (
+        creates.some(function (c) {
+          return c.special === "rainbow";
+        })
+      )
+        toast("彩虹糖！");
+    }
+
+    updateHud();
+    await Promise.all(promises);
+  }
+
+  function animFall(moves, added) {
+    const ps = [];
+    moves.forEach(function (m) {
+      const d = Math.abs(m.toR - m.tile.y);
+      ps.push(
+        tween(m.tile, { y: m.toR }, 0.08 + 0.12 * Math.sqrt(d), Ease.fall),
+      );
+    });
+    added.forEach(function (a) {
+      const t = a.tile;
+      t.x = a.c;
+      t.y = a.fromR;
+      t.s = 1;
+      t.a = 1;
+      ps.push(
+        tween(
+          t,
+          { y: a.toR },
+          0.08 + 0.12 * Math.sqrt(a.toR - a.fromR),
+          Ease.fall,
+        ),
+      );
+    });
+    return Promise.all(ps);
+  }
+
+  async function doShuffle(session) {
+    toast("没有可走的步了，洗牌！", 1200);
+    Sfx.shuffle();
+    await sleep(0.5);
+    if (session !== G.session) return;
+    M3.shuffle(G.grid, G.level.colors, Math.random);
+    const ps = [];
+    G.grid.forEach(function (row, r) {
+      row.forEach(function (t, c) {
+        ps.push(tween(t, { x: c, y: r }, 0.45, Ease.inOutQuad));
+      });
+    });
+    await Promise.all(ps);
+  }
+
+  function goalsMet() {
+    if (G.score < G.level.target) return false;
+    return G.level.goals.every(function (g) {
+      return (G.collected[g.color] || 0) >= g.count;
+    });
+  }
+
+  function starsFor(score) {
+    let s = 0;
+    STAR_RATIOS.forEach(function (ratio) {
+      if (score >= G.level.target * ratio) s++;
+    });
+    return s;
+  }
+
+  async function checkEnd(session) {
+    if (G.over) return;
+    if (goalsMet()) {
+      G.over = true;
+      updateHud();
+      Sfx.win();
+      toast("过关！", 1200);
+      await sleep(1.0);
+      // 剩余步数奖励
+      while (G.movesLeft > 0) {
+        if (session !== G.session) return;
+        G.movesLeft--;
+        G.score += 200;
+        const r = Math.floor(Math.random() * ROWS),
+          c = Math.floor(Math.random() * COLS);
+        spawnParticles(r, c, -1, 10);
+        floatText(r, c, "+200", 1);
+        Sfx.tick();
+        updateHud();
+        await sleep(0.12);
+      }
+      await sleep(0.6);
+      if (session !== G.session) return;
+      showWin();
+    } else if (G.movesLeft <= 0) {
+      G.over = true;
+      updateHud();
+      await sleep(0.5);
+      if (session !== G.session) return;
+      Sfx.lose();
+      showLose();
+    }
+  }
+
+  // ---------------- 输入 ----------------
+  let drag = null;
+
+  function cellFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left - pad,
+      y = e.clientY - rect.top - pad;
+    const c = Math.floor(x / cell),
+      r = Math.floor(y / cell);
+    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+    return { r: r, c: c };
+  }
+
+  canvas.addEventListener("pointerdown", function (e) {
+    Sfx.unlock();
+    e.preventDefault();
+    if (!G.playing || G.busy || G.over) return;
+    const cellPos = cellFromEvent(e);
+    if (!cellPos) return;
+    resetIdle();
+    drag = { start: cellPos, x: e.clientX, y: e.clientY, moved: false };
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch (err) {
+      /* 忽略 */
+    }
+  });
+
+  canvas.addEventListener("pointermove", function (e) {
+    if (!drag || drag.moved) return;
+    const dx = e.clientX - drag.x,
+      dy = e.clientY - drag.y;
+    const th = cell * 0.35;
+    if (Math.abs(dx) < th && Math.abs(dy) < th) return;
+    drag.moved = true;
+    const target =
+      Math.abs(dx) > Math.abs(dy)
+        ? { r: drag.start.r, c: drag.start.c + (dx > 0 ? 1 : -1) }
+        : { r: drag.start.r + (dy > 0 ? 1 : -1), c: drag.start.c };
+    G.selected = null;
+    attemptSwap(drag.start, target);
+  });
+
+  function endDrag(e) {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    if (d.moved || G.busy || G.over) return;
+    const cellPos = d.start;
+    const sel = G.selected;
+    if (
+      sel &&
+      Math.abs(sel.r - cellPos.r) + Math.abs(sel.c - cellPos.c) === 1
+    ) {
+      attemptSwap(sel, cellPos);
+    } else if (sel && sel.r === cellPos.r && sel.c === cellPos.c) {
+      G.selected = null;
+    } else {
+      G.selected = cellPos;
+      Sfx.select();
+    }
+  }
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", function () {
+    drag = null;
+  });
+
+  // 阻止 iOS 双指缩放和页面回弹
+  document.addEventListener("gesturestart", function (e) {
+    e.preventDefault();
+  });
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (!e.target.closest("#home")) e.preventDefault();
+    },
+    { passive: false },
+  );
+
+  // ---------------- 界面 ----------------
+  function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(function (s) {
+      s.classList.toggle("active", s.id === id);
+    });
+    G.playing = id === "game";
+    if (id === "game") requestAnimationFrame(resize);
+    if (id === "home") buildLevelGrid();
+  }
+
+  let goalEls = [];
+  function buildGoals() {
+    const box = $("#goals");
+    box.innerHTML = "";
+    goalEls = [];
+    const sc = document.createElement("div");
+    sc.className = "goal goal-score";
+    sc.innerHTML = "目标分 <b>" + G.level.target + "</b>";
+    box.appendChild(sc);
+    goalEls.push({ el: sc, score: true });
+    G.level.goals.forEach(function (g) {
+      const el = document.createElement("div");
+      el.className = "goal";
+      const cv = document.createElement("canvas");
+      el.appendChild(cv);
+      const cnt = document.createElement("span");
+      cnt.className = "count";
+      el.appendChild(cnt);
+      box.appendChild(el);
+      Render.drawIcon(cv, g.color);
+      goalEls.push({ el: el, cnt: cnt, goal: g });
+    });
+  }
+
+  function updateHud() {
+    if (!G.level) return;
+    $("#hudLevel").textContent = G.level.n;
+    $("#hudMoves").textContent = G.movesLeft;
+    $(".stat-moves").classList.toggle("low", G.movesLeft <= 5 && !G.over);
+    const maxScore = G.level.target * STAR_RATIOS[2];
+    $("#progressFill").style.width =
+      Math.min(100, (G.score / maxScore) * 100) + "%";
+    STAR_RATIOS.forEach(function (ratio, i) {
+      const el = $("#pstar" + (i + 1));
+      el.style.left = (ratio / STAR_RATIOS[2]) * 100 - (i === 2 ? 3 : 0) + "%";
+      el.classList.toggle("on", G.score >= G.level.target * ratio);
+    });
+    goalEls.forEach(function (g) {
+      if (g.score) {
+        g.el.classList.toggle("done", G.score >= G.level.target);
+        return;
+      }
+      const left = Math.max(0, g.goal.count - (G.collected[g.goal.color] || 0));
+      g.cnt.textContent = left;
+      g.el.classList.toggle("done", left === 0);
+    });
+  }
+
+  function startLevel(n) {
+    hideModal();
+    G.session = (G.session || 0) + 1;
+    tweens = [];
+    G.level = levelConfig(n);
+    G.grid = M3.createBoard(ROWS, COLS, G.level.colors);
+    placeTilesInstant();
+    G.score = 0;
+    G.shownScore = 0;
+    G.movesLeft = G.level.moves;
+    G.collected = [];
+    G.busy = false;
+    G.over = false;
+    G.selected = null;
+    resetIdle();
+    G.dying = [];
+    G.particles = [];
+    G.beams = [];
+    G.flashes = [];
+    G.zaps = [];
+    G.floats = [];
+    $("#hudScore").textContent = "0";
+    showScreen("game");
+    buildGoals();
+    updateHud();
+    showIntro();
+  }
+
+  function goalText() {
+    const lines = [
+      "在 " + G.level.moves + " 步内完成：",
+      "· 得分达到 " + G.level.target,
+    ];
+    G.level.goals.forEach(function (g) {
+      lines.push("· 消除" + COLOR_NAMES[g.color] + " " + g.count + " 个");
+    });
+    return lines.join("\n");
+  }
+
+  function showIntro() {
+    G.busy = true;
+    showModal({
+      title: "第 " + G.level.n + " 关",
+      text: goalText(),
+      buttons: [
+        {
+          label: "开始",
+          cls: "btn-primary",
+          onClick: function () {
+            Sfx.unlock();
+            hideModal();
+            G.busy = false;
+          },
+        },
+      ],
+    });
+  }
+
+  function showWin() {
+    const n = G.level.n;
+    const stars = Math.max(1, starsFor(G.score));
+    const d = Save.data;
+    d.stars[n] = Math.max(d.stars[n] || 0, stars);
+    const isBest = G.score > (d.best[n] || 0);
+    d.best[n] = Math.max(d.best[n] || 0, G.score);
+    if (n + 1 > d.unlocked && n < TOTAL_LEVELS) d.unlocked = n + 1;
+    Save.save();
+    const buttons = [
+      {
+        label: "选关",
+        cls: "btn-ghost",
+        onClick: function () {
+          hideModal();
+          showScreen("home");
+        },
+      },
+      {
+        label: "重玩",
+        cls: "btn-secondary",
+        onClick: function () {
+          startLevel(n);
+        },
+      },
+    ];
+    if (n < TOTAL_LEVELS)
+      buttons.push({
+        label: "下一关",
+        cls: "btn-primary",
+        onClick: function () {
+          startLevel(n + 1);
+        },
+      });
+    showModal({
+      title: n === TOTAL_LEVELS ? "全部通关！" : "过关！",
+      stars: stars,
+      text: "得分 " + G.score + (isBest ? "（新纪录）" : "\n最高 " + d.best[n]),
+      buttons: buttons,
+    });
+  }
+
+  function showLose() {
+    const n = G.level.n;
+    const missing = [];
+    if (G.score < G.level.target)
+      missing.push("还差 " + (G.level.target - G.score) + " 分");
+    G.level.goals.forEach(function (g) {
+      const left = g.count - (G.collected[g.color] || 0);
+      if (left > 0) missing.push(COLOR_NAMES[g.color] + "还差 " + left + " 个");
+    });
+    showModal({
+      title: "步数用完了",
+      text: missing.join("，") + "\n再试一次吧！",
+      buttons: [
+        {
+          label: "选关",
+          cls: "btn-ghost",
+          onClick: function () {
+            hideModal();
+            showScreen("home");
+          },
+        },
+        {
+          label: "再试一次",
+          cls: "btn-primary",
+          onClick: function () {
+            startLevel(n);
+          },
+        },
+      ],
+    });
+  }
+
+  function showPause() {
+    showModal({
+      title: "暂停",
+      text: goalText(),
+      buttons: [
+        {
+          label: "选关",
+          cls: "btn-ghost",
+          onClick: function () {
+            hideModal();
+            showScreen("home");
+          },
+        },
+        {
+          label: "重新开始",
+          cls: "btn-secondary",
+          onClick: function () {
+            startLevel(G.level.n);
+          },
+        },
+        { label: "继续", cls: "btn-primary", onClick: hideModal },
+      ],
+    });
+  }
+
+  function showHelp() {
+    showModal({
+      title: "玩法说明",
+      html:
+        '<ul class="help-list">' +
+        "<li>滑动或先后点击两个相邻方块进行交换，<b>三个或以上同色</b>连成一线即可消除。</li>" +
+        "<li><b>四连</b>：生成条纹糖，引爆时清除整行或整列。</li>" +
+        "<li><b>L 形 / T 形</b>：生成炸弹糖，引爆时清除周围 3×3。</li>" +
+        "<li><b>五连</b>：生成彩虹糖，与任意方块交换可清除全部同色。</li>" +
+        "<li>两个特殊糖互相交换会产生更强的组合效果。</li>" +
+        "<li>在步数内完成目标即可过关，分数越高星星越多。</li>" +
+        "</ul>",
+      buttons: [{ label: "知道了", cls: "btn-primary", onClick: hideModal }],
+    });
+  }
+
+  function showModal(opt) {
+    $("#modalTitle").textContent = opt.title;
+    const starsEl = $("#modalStars");
+    starsEl.classList.toggle("hidden", opt.stars == null);
+    Array.prototype.forEach.call(starsEl.children, function (s, i) {
+      s.classList.remove("on");
+      if (opt.stars != null && i < opt.stars) {
+        void s.offsetWidth; // 重新触发动画
+        s.classList.add("on");
+      }
+    });
+    const text = $("#modalText");
+    if (opt.html) text.innerHTML = opt.html;
+    else text.textContent = opt.text || "";
+    const btns = $("#modalButtons");
+    btns.innerHTML = "";
+    (opt.buttons || []).forEach(function (b) {
+      const el = document.createElement("button");
+      el.className = "btn " + (b.cls || "btn-ghost");
+      el.textContent = b.label;
+      el.addEventListener("click", function () {
+        Sfx.unlock();
+        b.onClick();
+      });
+      btns.appendChild(el);
+    });
+    $("#modal").classList.add("show");
+    $("#modal").setAttribute("aria-hidden", "false");
+  }
+
+  function hideModal() {
+    $("#modal").classList.remove("show");
+    $("#modal").setAttribute("aria-hidden", "true");
+  }
+
+  function buildLevelGrid() {
+    const grid = $("#levelGrid");
+    grid.innerHTML = "";
+    const d = Save.data;
+    for (let i = 1; i <= TOTAL_LEVELS; i++) {
+      const b = document.createElement("button");
+      b.className = "level-btn";
+      const locked = i > d.unlocked;
+      if (locked) b.classList.add("locked");
+      if (i === d.unlocked) b.classList.add("current");
+      const st = d.stars[i] || 0;
+      b.innerHTML =
+        "<span>" +
+        (locked ? "🔒" : i) +
+        "</span>" +
+        '<span class="stars">' +
+        [1, 2, 3]
+          .map(function (k) {
+            return '<span class="' + (k <= st ? "on" : "") + '">★</span>';
+          })
+          .join("") +
+        "</span>";
+      if (!locked)
+        b.addEventListener("click", function () {
+          Sfx.unlock();
+          startLevel(i);
+        });
+      else b.disabled = true;
+      grid.appendChild(b);
+    }
+    $("#btnContinue").textContent =
+      d.unlocked > 1
+        ? "继续第 " + Math.min(d.unlocked, TOTAL_LEVELS) + " 关"
+        : "开始游戏";
+  }
+
+  function applyMute() {
+    Sfx.muted = Save.data.muted;
+    $("#btnSound").classList.toggle("muted", Save.data.muted);
+    $("#btnSoundHome").textContent = "音效：" + (Save.data.muted ? "关" : "开");
+  }
+  function toggleMute() {
+    Save.data.muted = !Save.data.muted;
+    Save.save();
+    applyMute();
+    Sfx.unlock();
+  }
+
+  // ---------------- 启动 ----------------
+  Save.load();
+  applyMute();
+  $("#btnContinue").addEventListener("click", function () {
+    Sfx.unlock();
+    startLevel(Math.min(Save.data.unlocked, TOTAL_LEVELS));
+  });
+  $("#btnHelp").addEventListener("click", showHelp);
+  $("#btnSoundHome").addEventListener("click", toggleMute);
+  $("#btnSound").addEventListener("click", toggleMute);
+  $("#btnMenu").addEventListener("click", function () {
+    if (!G.over) showPause();
+  });
+  window.addEventListener("resize", function () {
+    if (G.playing) resize();
+  });
+  window.addEventListener("orientationchange", function () {
+    setTimeout(resize, 200);
+  });
+
+  showScreen("home");
+  requestAnimationFrame(frame);
+
+  // 离线缓存（需 https 或 localhost）
+  if (
+    "serviceWorker" in navigator &&
+    (location.protocol === "https:" ||
+      location.hostname === "localhost" ||
+      location.hostname === "127.0.0.1")
+  ) {
+    navigator.serviceWorker.register("sw.js").catch(function () {
+      /* 忽略 */
+    });
+  }
+
+  // 调试/测试用
+  window.__game = { G: G, startLevel: startLevel, levelConfig: levelConfig };
+})();
+
+</script>
+</body>
+</html>

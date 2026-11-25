@@ -1,0 +1,16 @@
+{
+  "name": "划水消消",
+  "short_name": "划水消消",
+  "description": "王羊奶专用的三消小游戏，可离线游玩",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2a1250",
+  "theme_color": "#2a1250",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
