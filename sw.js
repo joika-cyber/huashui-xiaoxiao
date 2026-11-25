@@ -1,5 +1,5 @@
 // 离线缓存：首次打开后即可断网游玩。更新游戏文件后把版本号 +1
-const CACHE = "huashui-v3";
+const CACHE = "huashui-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -18,7 +18,8 @@ const ASSETS = [
 self.addEventListener("install", function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      return c.addAll(ASSETS);
+      // cache: "reload" 绕过浏览器 HTTP 缓存，确保拿到最新文件
+      return c.addAll(ASSETS.map(function (u) { return new Request(u, { cache: "reload" }); }));
     }),
   );
   self.skipWaiting();
