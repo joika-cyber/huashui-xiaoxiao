@@ -1,5 +1,5 @@
 // 离线缓存：首次打开后即可断网游玩。更新游戏文件后把版本号 +1
-const CACHE = "huashui-v4";
+const CACHE = "huashui-v5";
 const ASSETS = [
   "./",
   "./index.html",
