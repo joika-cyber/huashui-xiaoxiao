@@ -104,3 +104,69 @@ test("洗牌后无现成匹配且有可行步", function () {
   assert.strictEqual(M3.findRuns(g).length, 0);
   assert.ok(M3.findPossibleMove(g));
 });
+
+// ---------------- 障碍与异形棋盘 ----------------
+
+test("冰块：相邻消除敲一下，耐久归零才碎；不能交换、不参与匹配", function () {
+  const g = board(["0 0 0", "4 5 1"]);
+  g[1][1] = M3.makeIce(2);
+  const state = { grid: g, mask: null, jelly: null };
+  assert.strictEqual(M3.canSwap(g, { r: 1, c: 1 }, { r: 1, c: 2 }), false);
+  const step = M3.resolveStep(state, null, null);
+  assert.strictEqual(step.removed.length, 3);
+  // 冰块与 3 个被消格相邻，但一步只扣 1 点
+  assert.strictEqual(step.iceHits.length, 1);
+  assert.strictEqual(g[1][1].ice, 1);
+  assert.strictEqual(M3.countIce(g), 1);
+});
+
+test("冰块被特殊糖直接波及会碎，碎后削减下方果冻", function () {
+  const g = board(["0R 1 2"]);
+  g[0][2] = M3.makeIce(1);
+  const jelly = [[0, 0, 1]];
+  const state = { grid: g, mask: null, jelly: jelly };
+  const step = M3.resolveStep(state, { clear: new Map([["0,0", [0, 0]]]), triggered: [] }, null);
+  assert.ok(step.iceHits.some((h) => h.destroyed));
+  assert.strictEqual(M3.countIce(g), 0);
+  assert.strictEqual(M3.countJelly(jelly), 0);
+});
+
+test("果冻：消除其上方块时减一层", function () {
+  const g = board(["0 0 0", "1 2 3"]);
+  const jelly = [
+    [2, 1, 0],
+    [0, 0, 0],
+  ];
+  const step = M3.resolveStep({ grid: g, mask: null, jelly: jelly }, null, null);
+  assert.strictEqual(step.jellyHits.length, 2);
+  assert.deepStrictEqual(jelly[0], [1, 0, 0]);
+});
+
+test("空洞：下落跨过空洞，补充不会填进空洞", function () {
+  const mask = [[true], [false], [true]];
+  const g = [[M3.makeTile(0)], [null], [null]];
+  const moves = M3.applyGravity(g, mask);
+  assert.strictEqual(moves.length, 1);
+  assert.strictEqual(moves[0].toR, 2);
+  const added = M3.refill(g, 5, Math.random, mask);
+  assert.strictEqual(added.length, 1);
+  assert.strictEqual(g[1][0], null);
+  assert.ok(g[0][0] && g[2][0]);
+});
+
+test("异形棋盘 + 冰块的新棋盘可玩，洗牌时冰块不动", function () {
+  const mask = [];
+  for (let r = 0; r < 8; r++) mask.push([...Array(8)].map((_, c) => !(r >= 3 && r <= 4 && c >= 3 && c <= 4)));
+  const ice = [{ r: 0, c: 0, hp: 2 }, { r: 7, c: 7, hp: 1 }];
+  for (let i = 0; i < 30; i++) {
+    const g = M3.createBoard(8, 8, 6, Math.random, { mask: mask, ice: ice });
+    assert.strictEqual(g[3][3], null);
+    assert.strictEqual(M3.countIce(g), 2);
+    assert.strictEqual(M3.findRuns(g).length, 0);
+    assert.ok(M3.findPossibleMove(g));
+    const iceTile = g[0][0];
+    M3.shuffle(g, 6, Math.random, mask);
+    assert.strictEqual(g[0][0], iceTile);
+    assert.strictEqual(g[4][4], null);
+  }
+});

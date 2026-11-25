@@ -1,10 +1,11 @@
 // 离线缓存：首次打开后即可断网游玩。更新游戏文件后把版本号 +1
-const CACHE = "huashui-v2";
+const CACHE = "huashui-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/style.css",
   "./js/logic.js",
+  "./js/levels.js",
   "./js/audio.js",
   "./js/render.js",
   "./js/game.js",

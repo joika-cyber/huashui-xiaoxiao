@@ -105,6 +105,14 @@
       drawRainbow(ctx, cx, cy, R);
       return;
     }
+    if (special === "ice1" || special === "ice2") {
+      drawIce(ctx, size, special === "ice2" ? 2 : 1);
+      return;
+    }
+    if (special === "jelly") {
+      drawJellyIcon(ctx, size);
+      return;
+    }
     const p = PALETTE[colorIdx];
 
     if (special === "bomb") {
@@ -273,6 +281,111 @@
       cache.set(k, cv);
     }
     return cv;
+  }
+
+  // 冰块：hp=2 为厚冰（带雪花），hp=1 为裂开的薄冰
+  function drawIce(ctx, size, hp) {
+    const m = size * 0.07,
+      w = size - m * 2,
+      rr = size * 0.16;
+    ctx.save();
+    ctx.translate(0, size * 0.03);
+    ctx.beginPath();
+    roundRect(ctx, m, m, w, w, rr);
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fill();
+    ctx.restore();
+
+    ctx.beginPath();
+    roundRect(ctx, m, m, w, w, rr);
+    const g = ctx.createLinearGradient(m, m, m + w, m + w);
+    if (hp >= 2) {
+      g.addColorStop(0, "#f2fcff");
+      g.addColorStop(0.5, "#9fdcff");
+      g.addColorStop(1, "#4b9fd8");
+    } else {
+      g.addColorStop(0, "#f7fdff");
+      g.addColorStop(0.55, "#c4ecff");
+      g.addColorStop(1, "#86c5ea");
+    }
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.lineWidth = size * 0.035;
+    ctx.strokeStyle = hp >= 2 ? "#2f7cb8" : "#6fb2dc";
+    ctx.stroke();
+
+    // 斜向高光
+    ctx.save();
+    ctx.beginPath();
+    roundRect(ctx, m, m, w, w, rr);
+    ctx.clip();
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.beginPath();
+    ctx.moveTo(m, m + w * 0.35);
+    ctx.lineTo(m + w * 0.35, m);
+    ctx.lineTo(m + w * 0.5, m);
+    ctx.lineTo(m, m + w * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    const cx = size / 2,
+      cy = size / 2;
+    ctx.strokeStyle =
+      hp >= 2 ? "rgba(255,255,255,0.95)" : "rgba(60,120,170,0.8)";
+    ctx.lineCap = "round";
+    if (hp >= 2) {
+      // 雪花
+      ctx.lineWidth = size * 0.045;
+      const r = size * 0.2;
+      for (let i = 0; i < 3; i++) {
+        const a = (i * Math.PI) / 3;
+        ctx.beginPath();
+        ctx.moveTo(cx - Math.cos(a) * r, cy - Math.sin(a) * r);
+        ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+        ctx.stroke();
+      }
+    } else {
+      // 裂纹
+      ctx.lineWidth = size * 0.03;
+      ctx.beginPath();
+      ctx.moveTo(m + w * 0.2, m + w * 0.15);
+      ctx.lineTo(cx - w * 0.05, cy - w * 0.02);
+      ctx.lineTo(cx + w * 0.12, cy + w * 0.08);
+      ctx.lineTo(m + w * 0.85, m + w * 0.8);
+      ctx.moveTo(cx - w * 0.05, cy - w * 0.02);
+      ctx.lineTo(m + w * 0.25, m + w * 0.75);
+      ctx.moveTo(cx + w * 0.12, cy + w * 0.08);
+      ctx.lineTo(m + w * 0.82, m + w * 0.3);
+      ctx.stroke();
+    }
+  }
+
+  function drawJellyIcon(ctx, size) {
+    const m = size * 0.1,
+      w = size - m * 2;
+    ctx.beginPath();
+    roundRect(ctx, m, m, w, w, size * 0.22);
+    const g = ctx.createLinearGradient(0, m, 0, m + w);
+    g.addColorStop(0, "#ffc2e2");
+    g.addColorStop(1, "#ff4fa3");
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.lineWidth = size * 0.05;
+    ctx.strokeStyle = "#c2185b";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(
+      size * 0.38,
+      size * 0.33,
+      size * 0.13,
+      size * 0.07,
+      -0.5,
+      0,
+      Math.PI * 2,
+    );
+    ctx.fillStyle = "rgba(255,255,255,0.75)";
+    ctx.fill();
   }
 
   function drawIcon(canvas, color, special) {

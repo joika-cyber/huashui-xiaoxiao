@@ -325,3 +325,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .help-list { text-align: left; margin: 0 0 16px; padding-left: 20px; color: var(--text-dim); line-height: 1.7; font-size: 14px; }
 .help-list b { color: var(--text); }
+
+/* ---------- 章节选关 ---------- */
+.chapters { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px; }
+.chapter {
+  --btn1: #8f5bff; --btn2: #6a2fd6; --btn3: #3f1a8a;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 12px 12px 14px;
+}
+.chapter-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 2px 2px; }
+.chapter-name { font-size: 17px; font-weight: 800; }
+.chapter-name small { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-right: 6px; }
+.chapter-stars { font-size: 13px; color: var(--accent); font-weight: 700; }
+.chapter-desc { font-size: 12px; color: var(--text-dim); margin: 0 2px 10px; }
+.chapter.locked-ch { opacity: 0.55; }
+.chapter .level-btn { background: linear-gradient(180deg, var(--btn1), var(--btn2)); box-shadow: 0 4px 0 var(--btn3); }
+.chapter .level-btn:active { box-shadow: 0 2px 0 var(--btn3); }
+.chapter .level-btn.locked { background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+.level-btn .tag { position: absolute; top: 3px; right: 4px; font-size: 10px; line-height: 1; }

@@ -119,6 +119,12 @@
     tick: function () {
       this.tone(1200, 0.04, "sine", 0.05);
     },
+    // 冰块被敲：清脆的高频声，碎掉时更响
+    ice: function (broken) {
+      this.noise(broken ? 0.25 : 0.12, broken ? 0.3 : 0.18, 5000);
+      this.tone(broken ? 2200 : 1800, 0.12, "triangle", 0.08, -600);
+      if (broken) this.tone(2900, 0.15, "sine", 0.06, -900, 0.05);
+    },
   };
 
   root.Sfx = Sfx;

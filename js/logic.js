@@ -1,8 +1,16 @@
 /*
  * 三消核心逻辑（纯逻辑，不依赖 DOM，可在 Node 中测试）
- * 棋盘 grid[r][c] = tile | null
- * tile = { id, color, special }，color: 0..n-1，彩虹球 color = -1
- * special: null | 'row' | 'col' | 'bomb' | 'rainbow'
+ *
+ * 棋盘状态 state = { grid, mask, jelly }
+ *   grid[r][c]  = tile | null（mask 为 false 的格子是棋盘上的空洞，永远为 null）
+ *   mask[r][c]  = true 表示可用格子；mask 为 null 表示整个矩形都可用
+ *   jelly[r][c] = 0/1/2，果冻层数；为 null 表示本关没有果冻
+ *
+ * tile = { id, color, special, ice }
+ *   color: 0..n-1；彩虹糖 color = -1；冰块 color = -2
+ *   special: null | 'row' | 'col' | 'bomb' | 'rainbow'
+ *   ice: 冰块剩余耐久（仅冰块有）。冰块不能交换、不参与匹配，会随重力下落，
+ *        相邻格子发生消除或被特殊糖波及时耐久 -1，归零后碎掉
  */
 (function (root) {
   "use strict";
@@ -10,6 +18,11 @@
   let nextId = 1;
   function makeTile(color, special) {
     return { id: nextId++, color: color, special: special || null };
+  }
+  function makeIce(hp) {
+    const t = makeTile(-2, null);
+    t.ice = hp || 1;
+    return t;
   }
 
   function key(r, c) {
@@ -20,8 +33,28 @@
     return r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
   }
 
+  function playable(mask, r, c) {
+    return !mask || mask[r][c];
+  }
+
+  function movable(t) {
+    return !!t && !t.ice;
+  }
+
   function randInt(rng, n) {
     return Math.floor(rng() * n);
+  }
+
+  // 可复现的随机数（关卡布局用）
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   // 找出所有横向/纵向连续 >=3 的同色段
@@ -238,7 +271,7 @@
   function activateSwap(grid, p, q) {
     const a = grid[p.r][p.c],
       b = grid[q.r][q.c];
-    if (!a || !b) return null;
+    if (!movable(a) || !movable(b)) return null;
     const clear = new Map();
     const triggered = [];
     function add(cell) {
@@ -255,7 +288,7 @@
       rb.consumed = true;
       add([rbPos.r, rbPos.c]);
       if (aR && bR) {
-        // 两个彩虹球：清空全盘
+        // 两个彩虹糖：清空全盘
         b.consumed = true;
         const all = [];
         grid.forEach(function (row, r) {
@@ -374,22 +407,135 @@
     return null;
   }
 
-  // 重力下落，返回移动记录
-  function applyGravity(grid) {
-    const rows = grid.length,
-      cols = grid[0].length,
+  // 执行消除：移除方块、削减果冻、敲击冰块（被波及或与被消除格相邻）
+  function applyClear(state, clear) {
+    const grid = state.grid,
+      jelly = state.jelly;
+    const removed = [],
+      iceHits = [],
+      jellyHits = [];
+    const hitIce = new Set();
+
+    function hitJelly(r, c) {
+      if (jelly && jelly[r][c] > 0) {
+        jelly[r][c]--;
+        jellyHits.push({ r: r, c: c, left: jelly[r][c] });
+      }
+    }
+    function hitIceAt(r, c) {
+      const k = key(r, c);
+      if (hitIce.has(k)) return;
+      const t = grid[r][c];
+      if (!t || !t.ice) return;
+      hitIce.add(k);
+      t.ice--;
+      const destroyed = t.ice <= 0;
+      if (destroyed) {
+        grid[r][c] = null;
+        hitJelly(r, c);
+      }
+      iceHits.push({ r: r, c: c, tile: t, destroyed: destroyed });
+    }
+
+    const cleared = [];
+    clear.forEach(function (p) {
+      const t = grid[p[0]][p[1]];
+      if (!t) return;
+      if (t.ice) {
+        hitIceAt(p[0], p[1]);
+        return;
+      }
+      grid[p[0]][p[1]] = null;
+      removed.push({ r: p[0], c: p[1], tile: t });
+      hitJelly(p[0], p[1]);
+      cleared.push(p);
+    });
+    cleared.forEach(function (p) {
+      [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ].forEach(function (d) {
+        const r = p[0] + d[0],
+          c = p[1] + d[1];
+        if (inBounds(grid, r, c)) hitIceAt(r, c);
+      });
+    });
+    return { removed: removed, iceHits: iceHits, jellyHits: jellyHits };
+  }
+
+  // 一步结算：匹配/特殊组合 → 连锁 → 消除 → 生成特殊糖。不处理下落与补充
+  // pending: activateSwap 的结果（交换触发的特殊组合），没有则传 null
+  // 返回 null 表示没有可消除的
+  function resolveStep(state, pending, preferred) {
+    const grid = state.grid;
+    let clear,
+      creates = [],
+      triggered = [];
+    if (pending) {
+      clear = pending.clear;
+      triggered = pending.triggered || [];
+    } else {
+      const groups = groupRuns(findRuns(grid));
+      if (!groups.length) return null;
+      const plan = planMatches(grid, groups, preferred);
+      clear = plan.clear;
+      creates = plan.creates;
+    }
+    triggered = triggered.concat(expandSpecials(grid, clear));
+    const res = applyClear(state, clear);
+    const created = [];
+    creates.forEach(function (cr) {
+      if (grid[cr.r][cr.c]) return; // 同一格已被占用
+      const t = makeTile(cr.color, cr.special);
+      grid[cr.r][cr.c] = t;
+      created.push({ r: cr.r, c: cr.c, tile: t });
+    });
+    return {
+      clear: clear,
+      triggered: triggered,
+      removed: res.removed,
+      iceHits: res.iceHits,
+      jellyHits: res.jellyHits,
+      created: created,
+    };
+  }
+
+  function stepScore(step, combo) {
+    return (
+      step.removed.length * 20 * combo +
+      step.created.length * 100 +
+      step.triggered.length * 60 +
+      step.iceHits.length * 40 +
+      step.jellyHits.length * 40
+    );
+  }
+
+  function playableRows(grid, mask, c) {
+    const out = [];
+    for (let r = 0; r < grid.length; r++) if (playable(mask, r, c)) out.push(r);
+    return out;
+  }
+
+  // 重力下落（跨过空洞），返回移动记录
+  function applyGravity(grid, mask) {
+    const cols = grid[0].length,
       moves = [];
     for (let c = 0; c < cols; c++) {
-      let write = rows - 1;
-      for (let r = rows - 1; r >= 0; r--) {
+      const rowsList = playableRows(grid, mask, c);
+      let w = rowsList.length - 1;
+      for (let i = rowsList.length - 1; i >= 0; i--) {
+        const r = rowsList[i];
         const t = grid[r][c];
         if (t) {
-          if (write !== r) {
-            grid[write][c] = t;
+          const to = rowsList[w];
+          if (to !== r) {
+            grid[to][c] = t;
             grid[r][c] = null;
-            moves.push({ tile: t, c: c, fromR: r, toR: write });
+            moves.push({ tile: t, c: c, fromR: r, toR: to });
           }
-          write--;
+          w--;
         }
       }
     }
@@ -397,20 +543,19 @@
   }
 
   // 顶部补充新块，fromR 为负数表示从棋盘上方落下
-  function refill(grid, nColors, rng) {
-    const rows = grid.length,
-      cols = grid[0].length,
+  function refill(grid, nColors, rng, mask) {
+    const cols = grid[0].length,
       added = [];
     for (let c = 0; c < cols; c++) {
-      let empty = 0;
-      for (let r = 0; r < rows; r++) if (!grid[r][c]) empty++;
-      for (let r = 0; r < rows; r++) {
-        if (!grid[r][c]) {
-          const t = makeTile(randInt(rng, nColors));
-          grid[r][c] = t;
-          added.push({ tile: t, c: c, fromR: r - empty, toR: r });
-        }
-      }
+      const rowsList = playableRows(grid, mask, c);
+      const empty = rowsList.filter(function (r) {
+        return !grid[r][c];
+      });
+      empty.forEach(function (r, i) {
+        const t = makeTile(randInt(rng, nColors));
+        grid[r][c] = t;
+        added.push({ tile: t, c: c, fromR: i - empty.length, toR: r });
+      });
     }
     return added;
   }
@@ -438,10 +583,21 @@
     grid[b.r][b.c] = t;
   }
 
-  // 找一个可行的交换（用于提示和判断是否需要洗牌）
-  function findPossibleMove(grid) {
+  // 两格能否交换（都存在且不是冰块）
+  function canSwap(grid, a, b) {
+    return (
+      inBounds(grid, a.r, a.c) &&
+      inBounds(grid, b.r, b.c) &&
+      movable(grid[a.r][a.c]) &&
+      movable(grid[b.r][b.c])
+    );
+  }
+
+  // 列出所有有效交换
+  function findAllMoves(grid) {
     const rows = grid.length,
-      cols = grid[0].length;
+      cols = grid[0].length,
+      out = [];
     const dirs = [
       [0, 1],
       [1, 0],
@@ -449,35 +605,47 @@
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         for (let d = 0; d < dirs.length; d++) {
-          const r2 = r + dirs[d][0],
-            c2 = c + dirs[d][1];
-          if (!inBounds(grid, r2, c2)) continue;
-          const a = grid[r][c],
-            b = grid[r2][c2];
-          if (!a || !b) continue;
           const pa = { r: r, c: c },
-            pb = { r: r2, c: c2 };
+            pb = { r: r + dirs[d][0], c: c + dirs[d][1] };
+          if (!canSwap(grid, pa, pb)) continue;
+          const a = grid[pa.r][pa.c],
+            b = grid[pb.r][pb.c];
           if (
             a.special === "rainbow" ||
             b.special === "rainbow" ||
             (a.special && b.special)
-          )
-            return [pa, pb];
+          ) {
+            out.push([pa, pb]);
+            continue;
+          }
           swapCells(grid, pa, pb);
-          const ok = hasMatchAt(grid, r, c) || hasMatchAt(grid, r2, c2);
+          const ok =
+            hasMatchAt(grid, pa.r, pa.c) || hasMatchAt(grid, pb.r, pb.c);
           swapCells(grid, pa, pb);
-          if (ok) return [pa, pb];
+          if (ok) out.push([pa, pb]);
         }
       }
     }
-    return null;
+    return out;
   }
 
-  function fillNoMatches(grid, nColors, rng) {
+  // 找一个可行的交换（用于提示和判断是否需要洗牌）
+  function findPossibleMove(grid) {
+    const all = findAllMoves(grid);
+    return all.length ? all[0] : null;
+  }
+
+  // 给可用格子随机上色，避免现成的三连。保留冰块
+  function fillNoMatches(grid, nColors, rng, mask) {
     const rows = grid.length,
       cols = grid[0].length;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
+        if (!playable(mask, r, c)) {
+          grid[r][c] = null;
+          continue;
+        }
+        if (grid[r][c] && grid[r][c].ice) continue;
         let color,
           guard = 0;
         do {
@@ -497,26 +665,33 @@
     }
   }
 
-  function createBoard(rows, cols, nColors, rng) {
+  // opts: { mask, ice: [{ r, c, hp }] }
+  function createBoard(rows, cols, nColors, rng, opts) {
     rng = rng || Math.random;
-    for (let tries = 0; tries < 200; tries++) {
+    opts = opts || {};
+    for (let tries = 0; tries < 300; tries++) {
       const grid = [];
       for (let r = 0; r < rows; r++) grid.push(new Array(cols).fill(null));
-      fillNoMatches(grid, nColors, rng);
+      (opts.ice || []).forEach(function (ic) {
+        if (playable(opts.mask, ic.r, ic.c)) grid[ic.r][ic.c] = makeIce(ic.hp);
+      });
+      fillNoMatches(grid, nColors, rng, opts.mask);
       if (findRuns(grid).length === 0 && findPossibleMove(grid)) return grid;
     }
     throw new Error("无法生成棋盘");
   }
 
-  // 洗牌：保留方块对象（含特殊块），打乱位置直到无现成匹配且有可行步
-  function shuffle(grid, nColors, rng) {
+  // 洗牌：冰块原地不动，其余方块（含特殊糖）打乱，直到无现成匹配且有可行步
+  function shuffle(grid, nColors, rng, mask) {
     rng = rng || Math.random;
-    const rows = grid.length,
-      cols = grid[0].length;
-    const tiles = [];
-    grid.forEach(function (row) {
-      row.forEach(function (t) {
-        if (t) tiles.push(t);
+    const cells = [],
+      tiles = [];
+    grid.forEach(function (row, r) {
+      row.forEach(function (t, c) {
+        if (movable(t)) {
+          cells.push([r, c]);
+          tiles.push(t);
+        }
       });
     });
     for (let tries = 0; tries < 300; tries++) {
@@ -526,33 +701,66 @@
         tiles[i] = tiles[j];
         tiles[j] = tmp;
       }
-      let k = 0;
-      for (let r = 0; r < rows; r++)
-        for (let c = 0; c < cols; c++) grid[r][c] = tiles[k++];
+      cells.forEach(function (p, i) {
+        grid[p[0]][p[1]] = tiles[i];
+      });
       if (findRuns(grid).length === 0 && findPossibleMove(grid)) return;
     }
     // 实在洗不出来就重新上色普通块
-    fillNoMatches(grid, nColors, rng);
+    for (let tries = 0; tries < 50; tries++) {
+      fillNoMatches(grid, nColors, rng, mask);
+      if (findPossibleMove(grid)) return;
+    }
+  }
+
+  function countIce(grid) {
+    let n = 0;
+    grid.forEach(function (row) {
+      row.forEach(function (t) {
+        if (t && t.ice) n++;
+      });
+    });
+    return n;
+  }
+
+  function countJelly(jelly) {
+    if (!jelly) return 0;
+    let n = 0;
+    jelly.forEach(function (row) {
+      row.forEach(function (v) {
+        n += v;
+      });
+    });
+    return n;
   }
 
   const api = {
     makeTile: makeTile,
+    makeIce: makeIce,
     key: key,
     inBounds: inBounds,
+    mulberry32: mulberry32,
     findRuns: findRuns,
     groupRuns: groupRuns,
     planMatches: planMatches,
     specialArea: specialArea,
     expandSpecials: expandSpecials,
     activateSwap: activateSwap,
+    applyClear: applyClear,
+    resolveStep: resolveStep,
+    stepScore: stepScore,
     applyGravity: applyGravity,
     refill: refill,
     hasMatchAt: hasMatchAt,
     swapCells: swapCells,
+    canSwap: canSwap,
+    findAllMoves: findAllMoves,
     findPossibleMove: findPossibleMove,
     createBoard: createBoard,
     shuffle: shuffle,
     mostCommonColor: mostCommonColor,
+    countIce: countIce,
+    countJelly: countJelly,
   };
   root.M3 = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;

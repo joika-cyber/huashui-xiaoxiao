@@ -2,12 +2,20 @@
 (function () {
   "use strict";
 
-  const ROWS = 8,
-    COLS = 8,
-    TOTAL_LEVELS = 30;
-  const STORE_KEY = "bingfen-progress-v1";
+  const ROWS = Levels.ROWS,
+    COLS = Levels.COLS,
+    TOTAL_LEVELS = Levels.TOTAL;
+  const STORE_KEY = "bingfen-progress-v1"; // 沿用旧键名，保留已有进度
   const COLOR_NAMES = ["红心", "橙糖", "黄星", "绿宝石", "蓝钻", "紫水滴"];
   const STAR_RATIOS = [1, 1.4, 1.8];
+  // 各章选关按钮配色：亮、暗、阴影
+  const CH_BTN = [
+    ["#8f5bff", "#6a2fd6", "#3f1a8a"],
+    ["#ff6fae", "#d6337f", "#8a1a50"],
+    ["#5bb8ff", "#2f7fd6", "#1a4a8a"],
+    ["#4fd39a", "#22a06b", "#11603f"],
+    ["#ffcc4d", "#e09b12", "#8a5a05"],
+  ];
 
   const $ = function (s) {
     return document.querySelector(s);
@@ -32,26 +40,6 @@
       }
     },
   };
-
-  // ---------------- 关卡配置（按关卡号生成，难度逐步上升） ----------------
-  function levelConfig(n) {
-    const colors = n <= 4 ? 5 : 6;
-    const moves = Math.max(16, 26 - Math.floor((n - 1) / 3));
-    const perMove = (colors === 5 ? 70 : 55) + n * 2;
-    const target = Math.round((moves * perMove) / 50) * 50;
-    const goals = [];
-    if (n >= 3)
-      goals.push({
-        color: (n * 2) % colors,
-        count: Math.round(moves * (0.5 + n * 0.012)),
-      });
-    if (n >= 10)
-      goals.push({
-        color: (n * 2 + 3) % colors,
-        count: Math.round(moves * (0.35 + n * 0.01)),
-      });
-    return { n: n, colors: colors, moves: moves, target: target, goals: goals };
-  }
 
   // ---------------- 补间动画 ----------------
   const Ease = {
@@ -80,6 +68,10 @@
       }
       const u = (t - 0.8) / 0.2;
       return 1 - Math.sin(u * Math.PI) * 0.06;
+    },
+    // 先放大再回到原状（冰块被敲）
+    bump: function (t) {
+      return Math.sin(t * Math.PI);
     },
   };
 
@@ -112,7 +104,8 @@
       for (const k in tw.to)
         tw.obj[k] = tw.from[k] + (tw.to[k] - tw.from[k]) * e;
       if (p >= 1) {
-        for (const k in tw.to) tw.obj[k] = tw.to[k];
+        for (const k in tw.to)
+          tw.obj[k] = tw.ease === Ease.bump ? tw.from[k] : tw.to[k];
         tweens.splice(i, 1);
         tw.resolve();
       }
@@ -125,6 +118,7 @@
   // ---------------- 游戏状态 ----------------
   const G = {
     level: null,
+    state: null, // { grid, mask, jelly }
     grid: null,
     score: 0,
     shownScore: 0,
@@ -142,8 +136,19 @@
     flashes: [],
     zaps: [],
     floats: [],
+    splashes: [],
     shake: 0,
   };
+
+  function isPlayable(r, c) {
+    return (
+      r >= 0 &&
+      r < ROWS &&
+      c >= 0 &&
+      c < COLS &&
+      (!G.state.mask || G.state.mask[r][c])
+    );
+  }
 
   // ---------------- 画布尺寸 ----------------
   const canvas = $("#board");
@@ -170,7 +175,7 @@
   }
 
   // ---------------- 特效 ----------------
-  function spawnParticles(r, c, color, n) {
+  function spawnParticles(r, c, color, n, fixedColor) {
     const p = cellCenter(r, c);
     const pal = Render.PALETTE;
     for (let i = 0; i < (n || 7); i++) {
@@ -185,9 +190,10 @@
         max: 0.8,
         size: cell * (0.06 + Math.random() * 0.08),
         color:
-          color >= 0
+          fixedColor ||
+          (color >= 0
             ? pal[color].base
-            : pal[Math.floor(Math.random() * pal.length)].base,
+            : pal[Math.floor(Math.random() * pal.length)].base),
       });
     }
   }
@@ -223,7 +229,7 @@
       p.vy += cell * 14 * dt;
       return p.life > 0;
     });
-    [G.beams, G.flashes, G.zaps, G.floats].forEach(function (list) {
+    [G.beams, G.flashes, G.zaps, G.floats, G.splashes].forEach(function (list) {
       for (let i = list.length - 1; i >= 0; i--) {
         list[i].life -= dt;
         if (list[i].life <= 0) list.splice(i, 1);
@@ -243,7 +249,10 @@
       s *= 1 + 0.07 * Math.sin(time * 9);
     if (G.selected && G.grid[G.selected.r][G.selected.c] === t)
       s *= 1.1 + 0.03 * Math.sin(time * 10);
-    const spr = Render.getSprite(t.color, t.special, cell * dpr);
+    const spr =
+      t.ice !== undefined
+        ? Render.getSprite(-2, "ice" + Math.max(1, t.ice), cell * dpr)
+        : Render.getSprite(t.color, t.special, cell * dpr);
     const size = cell * s;
     const x = pad + (t.x + 0.5) * cell - size / 2;
     const y = pad + (t.y + 0.5) * cell - size / 2;
@@ -252,22 +261,31 @@
     ctx.globalAlpha = 1;
   }
 
-  function draw(time) {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, boardPx, boardPx);
-    if (G.shake > 0)
-      ctx.translate(
-        (Math.random() - 0.5) * G.shake * cell * 0.25,
-        (Math.random() - 0.5) * G.shake * cell * 0.25,
-      );
-
-    // 棋盘底
+  function drawBoardBase() {
+    const mask = G.state && G.state.mask;
+    // 棋盘底：所有可用格子外扩后合成一个形状，一次填充避免重叠处变暗
     ctx.beginPath();
-    Render.roundRect(ctx, 0, 0, boardPx, boardPx, boardPx * 0.04);
+    if (!mask) {
+      Render.roundRect(ctx, 0, 0, boardPx, boardPx, boardPx * 0.04);
+    } else {
+      const e = pad * 0.9;
+      for (let r = 0; r < ROWS; r++)
+        for (let c = 0; c < COLS; c++)
+          if (mask[r][c])
+            ctx.rect(
+              pad + c * cell - e,
+              pad + r * cell - e,
+              cell + e * 2,
+              cell + e * 2,
+            );
+    }
     ctx.fillStyle = "rgba(20, 8, 45, 0.55)";
     ctx.fill();
+
+    const jelly = G.state && G.state.jelly;
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
+        if (mask && !mask[r][c]) continue;
         ctx.beginPath();
         Render.roundRect(
           ctx,
@@ -280,8 +298,51 @@
         ctx.fillStyle =
           (r + c) % 2 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.12)";
         ctx.fill();
+        const j = jelly ? jelly[r][c] : 0;
+        if (j > 0) {
+          ctx.beginPath();
+          Render.roundRect(
+            ctx,
+            pad + c * cell + 2.5,
+            pad + r * cell + 2.5,
+            cell - 5,
+            cell - 5,
+            cell * 0.2,
+          );
+          ctx.fillStyle =
+            j >= 2 ? "rgba(255, 70, 165, 0.7)" : "rgba(255, 120, 190, 0.5)";
+          ctx.fill();
+          ctx.lineWidth = j >= 2 ? 2.5 : 1.5;
+          ctx.strokeStyle = "rgba(255, 190, 225, 0.85)";
+          ctx.stroke();
+        }
       }
     }
+  }
+
+  function draw(time) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, boardPx, boardPx);
+    if (G.shake > 0)
+      ctx.translate(
+        (Math.random() - 0.5) * G.shake * cell * 0.25,
+        (Math.random() - 0.5) * G.shake * cell * 0.25,
+      );
+
+    if (!G.state) return;
+    drawBoardBase();
+
+    // 果冻被清掉时的粉色涟漪
+    G.splashes.forEach(function (s) {
+      const k = s.life / s.max;
+      const ctr = cellCenter(s.r, s.c);
+      ctx.beginPath();
+      ctx.arc(ctr.x, ctr.y, cell * (0.6 - k * 0.3), 0, Math.PI * 2);
+      ctx.lineWidth = cell * 0.1 * k;
+      ctx.strokeStyle = "rgba(255, 140, 200," + k + ")";
+      ctx.stroke();
+    });
+
     if (G.selected) {
       ctx.beginPath();
       Render.roundRect(
@@ -298,8 +359,6 @@
       ctx.strokeStyle = "rgba(255, 214, 10, 0.9)";
       ctx.stroke();
     }
-
-    if (!G.grid) return;
 
     // 方块（裁剪到棋盘内，新方块从上方滑入）
     ctx.save();
@@ -345,7 +404,7 @@
       ctx.stroke();
     });
 
-    // 彩虹球闪电
+    // 彩虹糖闪电
     G.zaps.forEach(function (z) {
       const k = z.life / z.max;
       const from = cellCenter(z.r, z.c);
@@ -429,6 +488,7 @@
   function placeTilesInstant() {
     G.grid.forEach(function (row, r) {
       row.forEach(function (t, c) {
+        if (!t) return;
         t.x = c;
         t.y = r;
         t.s = 1;
@@ -449,7 +509,15 @@
 
   async function attemptSwap(a, b) {
     if (G.busy || G.over) return;
-    if (!M3.inBounds(G.grid, b.r, b.c)) return;
+    if (!M3.canSwap(G.grid, a, b)) {
+      // 冰块或空洞不能交换
+      if (isPlayable(b.r, b.c) && G.grid[b.r][b.c] && G.grid[b.r][b.c].ice) {
+        Sfx.invalid();
+        const t = G.grid[b.r][b.c];
+        tween(t, { s: 1.12 }, 0.2, Ease.bump);
+      }
+      return;
+    }
     G.busy = true;
     G.selected = null;
     resetIdle();
@@ -479,27 +547,20 @@
     let combo = 0;
     let pending = initial;
     while (true) {
-      let clear,
-        creates = [],
-        triggered = [];
-      if (pending) {
-        clear = pending.clear;
-        triggered = pending.triggered || [];
-        pending = null;
-      } else {
-        const groups = M3.groupRuns(M3.findRuns(G.grid));
-        if (!groups.length) break;
-        const plan = M3.planMatches(G.grid, groups, preferred);
-        clear = plan.clear;
-        creates = plan.creates;
-      }
+      const step = M3.resolveStep(G.state, pending, preferred);
+      pending = null;
       preferred = null;
-      triggered = triggered.concat(M3.expandSpecials(G.grid, clear));
+      if (!step) break;
       combo++;
-      await animClear(clear, creates, triggered, combo);
+      await animStep(step, combo);
       if (session !== G.session) return;
-      const moves = M3.applyGravity(G.grid);
-      const added = M3.refill(G.grid, G.level.colors, Math.random);
+      const moves = M3.applyGravity(G.grid, G.state.mask);
+      const added = M3.refill(
+        G.grid,
+        G.level.colors,
+        Math.random,
+        G.state.mask,
+      );
       await animFall(moves, added);
       if (session !== G.session) return;
     }
@@ -518,10 +579,11 @@
     if (!M3.findPossibleMove(G.grid)) await doShuffle(session);
   }
 
-  async function animClear(clear, creates, triggered, combo) {
+  // 播放一步结算的动画（逻辑已在 resolveStep 中完成）
+  async function animStep(step, combo) {
     let hasBomb = false,
       big = false;
-    triggered.forEach(function (tr) {
+    step.triggered.forEach(function (tr) {
       if (tr.special === "row" || tr.special === "col") {
         G.beams.push({
           r: tr.r,
@@ -553,28 +615,25 @@
       }
     });
     if (hasBomb) Sfx.blast(big);
-    else if (triggered.length) Sfx.zap();
+    else if (step.triggered.length) Sfx.zap();
     Sfx.match(combo);
+    if (step.iceHits.length) Sfx.ice(step.iceHits.some((h) => h.destroyed));
 
-    const gained =
-      clear.size * 20 * combo + creates.length * 100 + triggered.length * 60;
+    const gained = M3.stepScore(step, combo);
     G.score += gained;
 
     let sr = 0,
-      sc = 0;
-    clear.forEach(function (p) {
-      sr += p[0];
-      sc += p[1];
+      sc = 0,
+      n = 0;
+    step.removed.forEach(function (x) {
+      sr += x.r;
+      sc += x.c;
+      n++;
     });
-    floatText(sr / clear.size, sc / clear.size, "+" + gained, combo);
+    if (n) floatText(sr / n, sc / n, "+" + gained, combo);
 
     const promises = [];
-    clear.forEach(function (p) {
-      const t = G.grid[p[0]][p[1]];
-      if (!t) return;
-      G.grid[p[0]][p[1]] = null;
-      if (t.color >= 0) G.collected[t.color] = (G.collected[t.color] || 0) + 1;
-      spawnParticles(p[0], p[1], t.color);
+    function fadeOut(t) {
       G.dying.push(t);
       promises.push(
         tween(t, { s: 0, a: 0 }, 0.24, Ease.inBack).then(function () {
@@ -582,24 +641,32 @@
           if (i >= 0) G.dying.splice(i, 1);
         }),
       );
+    }
+    step.removed.forEach(function (x) {
+      if (x.tile.color >= 0)
+        G.collected[x.tile.color] = (G.collected[x.tile.color] || 0) + 1;
+      spawnParticles(x.r, x.c, x.tile.color);
+      fadeOut(x.tile);
     });
-
-    creates.forEach(function (cr) {
-      const nt = M3.makeTile(cr.color, cr.special);
+    step.iceHits.forEach(function (h) {
+      spawnParticles(h.r, h.c, -1, h.destroyed ? 12 : 5, "#d8f4ff");
+      if (h.destroyed) fadeOut(h.tile);
+      else promises.push(tween(h.tile, { s: 1.15 }, 0.22, Ease.bump));
+    });
+    step.jellyHits.forEach(function (j) {
+      G.splashes.push({ r: j.r, c: j.c, life: 0.45, max: 0.45 });
+    });
+    step.created.forEach(function (cr) {
+      const nt = cr.tile;
       nt.x = cr.c;
       nt.y = cr.r;
       nt.s = 0;
       nt.a = 1;
-      G.grid[cr.r][cr.c] = nt;
       promises.push(tween(nt, { s: 1 }, 0.32, Ease.outBack, 0.12));
     });
-    if (creates.length) {
+    if (step.created.length) {
       Sfx.create();
-      if (
-        creates.some(function (c) {
-          return c.special === "rainbow";
-        })
-      )
+      if (step.created.some((c) => c.tile.special === "rainbow"))
         toast("彩虹糖！");
     }
 
@@ -638,18 +705,27 @@
     Sfx.shuffle();
     await sleep(0.5);
     if (session !== G.session) return;
-    M3.shuffle(G.grid, G.level.colors, Math.random);
+    M3.shuffle(G.grid, G.level.colors, Math.random, G.state.mask);
     const ps = [];
     G.grid.forEach(function (row, r) {
       row.forEach(function (t, c) {
-        ps.push(tween(t, { x: c, y: r }, 0.45, Ease.inOutQuad));
+        if (t) ps.push(tween(t, { x: c, y: r }, 0.45, Ease.inOutQuad));
       });
     });
     await Promise.all(ps);
   }
 
+  function jellyLeft() {
+    return M3.countJelly(G.state.jelly);
+  }
+  function iceLeft() {
+    return M3.countIce(G.grid);
+  }
+
   function goalsMet() {
     if (G.score < G.level.target) return false;
+    if (G.level.jelly && jellyLeft() > 0) return false;
+    if (G.level.ice.length && iceLeft() > 0) return false;
     return G.level.goals.every(function (g) {
       return (G.collected[g.color] || 0) >= g.count;
     });
@@ -676,8 +752,11 @@
         if (session !== G.session) return;
         G.movesLeft--;
         G.score += 200;
-        const r = Math.floor(Math.random() * ROWS),
+        let r, c;
+        do {
+          r = Math.floor(Math.random() * ROWS);
           c = Math.floor(Math.random() * COLS);
+        } while (!isPlayable(r, c));
         spawnParticles(r, c, -1, 10);
         floatText(r, c, "+200", 1);
         Sfx.tick();
@@ -706,7 +785,7 @@
       y = e.clientY - rect.top - pad;
     const c = Math.floor(x / cell),
       r = Math.floor(y / cell);
-    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return null;
+    if (!isPlayable(r, c)) return null;
     return { r: r, c: c };
   }
 
@@ -717,6 +796,14 @@
     const cellPos = cellFromEvent(e);
     if (!cellPos) return;
     resetIdle();
+    const t = G.grid[cellPos.r][cellPos.c];
+    if (t && t.ice) {
+      // 点到冰块：提示不能移动
+      Sfx.invalid();
+      tween(t, { s: 1.12 }, 0.2, Ease.bump);
+      G.selected = null;
+      return;
+    }
     drag = { start: cellPos, x: e.clientX, y: e.clientY, moved: false };
     try {
       canvas.setPointerCapture(e.pointerId);
@@ -740,7 +827,7 @@
     attemptSwap(drag.start, target);
   });
 
-  function endDrag(e) {
+  function endDrag() {
     if (!drag) return;
     const d = drag;
     drag = null;
@@ -777,36 +864,64 @@
   );
 
   // ---------------- 界面 ----------------
+  const DEFAULT_BG = Levels.CHAPTERS[0].bg;
+  function setBackground(bg) {
+    document.body.style.background =
+      "radial-gradient(120% 90% at 20% 0%, " +
+      bg[0] +
+      " 0%, " +
+      bg[1] +
+      " 55%, " +
+      bg[2] +
+      " 100%)";
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", bg[1]);
+  }
+
   function showScreen(id) {
     document.querySelectorAll(".screen").forEach(function (s) {
       s.classList.toggle("active", s.id === id);
     });
     G.playing = id === "game";
     if (id === "game") requestAnimationFrame(resize);
-    if (id === "home") buildLevelGrid();
+    if (id === "home") {
+      setBackground(DEFAULT_BG);
+      buildLevelGrid();
+    }
   }
 
   let goalEls = [];
+  function addGoalChip(iconColor, iconSpecial, getLeft) {
+    const el = document.createElement("div");
+    el.className = "goal";
+    const cv = document.createElement("canvas");
+    el.appendChild(cv);
+    const cnt = document.createElement("span");
+    cnt.className = "count";
+    el.appendChild(cnt);
+    $("#goals").appendChild(el);
+    Render.drawIcon(cv, iconColor, iconSpecial);
+    goalEls.push({ el: el, cnt: cnt, left: getLeft });
+  }
+
   function buildGoals() {
     const box = $("#goals");
     box.innerHTML = "";
     goalEls = [];
     const sc = document.createElement("div");
     sc.className = "goal goal-score";
-    sc.innerHTML = "目标分 <b>" + G.level.target + "</b>";
+    sc.textContent = "目标分 ";
+    const b = document.createElement("b");
+    b.textContent = G.level.target;
+    sc.appendChild(b);
     box.appendChild(sc);
     goalEls.push({ el: sc, score: true });
+    if (G.level.jelly) addGoalChip(0, "jelly", jellyLeft);
+    if (G.level.ice.length) addGoalChip(-2, "ice2", iceLeft);
     G.level.goals.forEach(function (g) {
-      const el = document.createElement("div");
-      el.className = "goal";
-      const cv = document.createElement("canvas");
-      el.appendChild(cv);
-      const cnt = document.createElement("span");
-      cnt.className = "count";
-      el.appendChild(cnt);
-      box.appendChild(el);
-      Render.drawIcon(cv, g.color);
-      goalEls.push({ el: el, cnt: cnt, goal: g });
+      addGoalChip(g.color, null, function () {
+        return Math.max(0, g.count - (G.collected[g.color] || 0));
+      });
     });
   }
 
@@ -828,7 +943,7 @@
         g.el.classList.toggle("done", G.score >= G.level.target);
         return;
       }
-      const left = Math.max(0, g.goal.count - (G.collected[g.goal.color] || 0));
+      const left = g.left();
       g.cnt.textContent = left;
       g.el.classList.toggle("done", left === 0);
     });
@@ -838,12 +953,25 @@
     hideModal();
     G.session = (G.session || 0) + 1;
     tweens = [];
-    G.level = levelConfig(n);
-    G.grid = M3.createBoard(ROWS, COLS, G.level.colors);
+    G.level = Levels.levelConfig(n);
+    const lv = G.level;
+    G.state = {
+      grid: M3.createBoard(ROWS, COLS, lv.colors, Math.random, {
+        mask: lv.mask,
+        ice: lv.ice,
+      }),
+      mask: lv.mask,
+      jelly: lv.jelly
+        ? lv.jelly.map(function (row) {
+            return row.slice();
+          })
+        : null,
+    };
+    G.grid = G.state.grid;
     placeTilesInstant();
     G.score = 0;
     G.shownScore = 0;
-    G.movesLeft = G.level.moves;
+    G.movesLeft = lv.moves;
     G.collected = [];
     G.busy = false;
     G.over = false;
@@ -855,7 +983,9 @@
     G.flashes = [];
     G.zaps = [];
     G.floats = [];
+    G.splashes = [];
     $("#hudScore").textContent = "0";
+    setBackground(Levels.CHAPTERS[lv.chapter - 1].bg);
     showScreen("game");
     buildGoals();
     updateHud();
@@ -863,21 +993,31 @@
   }
 
   function goalText() {
-    const lines = [
-      "在 " + G.level.moves + " 步内完成：",
-      "· 得分达到 " + G.level.target,
-    ];
-    G.level.goals.forEach(function (g) {
+    const lv = G.level;
+    const lines = ["在 " + lv.moves + " 步内完成："];
+    if (lv.jelly)
+      lines.push("· 清除全部果冻（共 " + M3.countJelly(lv.jelly) + " 层）");
+    if (lv.ice.length)
+      lines.push("· 敲碎全部冰块（共 " + lv.ice.length + " 块）");
+    lv.goals.forEach(function (g) {
       lines.push("· 消除" + COLOR_NAMES[g.color] + " " + g.count + " 个");
     });
+    lines.push("· 得分达到 " + lv.target);
     return lines.join("\n");
   }
 
   function showIntro() {
     G.busy = true;
+    const lv = G.level;
+    const ch = Levels.CHAPTERS[lv.chapter - 1];
     showModal({
-      title: "第 " + G.level.n + " 关",
-      text: goalText(),
+      title: "第 " + lv.n + " 关",
+      text:
+        (lv.intro ? lv.intro + "\n\n" : "") +
+        "【" +
+        ch.name +
+        "】\n" +
+        goalText(),
       buttons: [
         {
           label: "开始",
@@ -926,10 +1066,23 @@
           startLevel(n + 1);
         },
       });
+    let title = "过关！";
+    let extra = "";
+    if (n === TOTAL_LEVELS) {
+      title = "全部通关！";
+      extra = "\n王羊奶太强了！100 关全部拿下！";
+    } else if (n % 20 === 0) {
+      title = "第 " + n / 20 + " 章完成！";
+      extra = "\n下一章：" + Levels.CHAPTERS[n / 20].name;
+    }
     showModal({
-      title: n === TOTAL_LEVELS ? "全部通关！" : "过关！",
+      title: title,
       stars: stars,
-      text: "得分 " + G.score + (isBest ? "（新纪录）" : "\n最高 " + d.best[n]),
+      text:
+        "得分 " +
+        G.score +
+        (isBest ? "（新纪录）" : "\n最高 " + d.best[n]) +
+        extra,
       buttons: buttons,
     });
   }
@@ -937,12 +1090,16 @@
   function showLose() {
     const n = G.level.n;
     const missing = [];
-    if (G.score < G.level.target)
-      missing.push("还差 " + (G.level.target - G.score) + " 分");
+    if (G.level.jelly && jellyLeft() > 0)
+      missing.push("果冻还剩 " + jellyLeft() + " 层");
+    if (G.level.ice.length && iceLeft() > 0)
+      missing.push("冰块还剩 " + iceLeft() + " 块");
     G.level.goals.forEach(function (g) {
       const left = g.count - (G.collected[g.color] || 0);
       if (left > 0) missing.push(COLOR_NAMES[g.color] + "还差 " + left + " 个");
     });
+    if (G.score < G.level.target)
+      missing.push("还差 " + (G.level.target - G.score) + " 分");
     showModal({
       title: "步数用完了",
       text: missing.join("，") + "\n再试一次吧！",
@@ -1001,7 +1158,9 @@
         "<li><b>L 形 / T 形</b>：生成炸弹糖，引爆时清除周围 3×3。</li>" +
         "<li><b>五连</b>：生成彩虹糖，与任意方块交换可清除全部同色。</li>" +
         "<li>两个特殊糖互相交换会产生更强的组合效果。</li>" +
-        "<li>在步数内完成目标即可过关，分数越高星星越多。</li>" +
+        "<li><b>果冻</b>：在果冻格上消除即可清掉一层。</li>" +
+        "<li><b>冰块</b>：不能移动，在旁边消除或用特殊糖波及可敲掉一层。</li>" +
+        "<li>在步数内完成全部目标即可过关，分数越高星星越多。</li>" +
         "</ul>",
       buttons: [{ label: "知道了", cls: "btn-primary", onClick: hideModal }],
     });
@@ -1043,39 +1202,86 @@
   }
 
   function buildLevelGrid() {
-    const grid = $("#levelGrid");
-    grid.innerHTML = "";
+    const root = $("#levelGrid");
+    root.innerHTML = "";
     const d = Save.data;
-    for (let i = 1; i <= TOTAL_LEVELS; i++) {
-      const b = document.createElement("button");
-      b.className = "level-btn";
-      const locked = i > d.unlocked;
-      if (locked) b.classList.add("locked");
-      if (i === d.unlocked) b.classList.add("current");
-      const st = d.stars[i] || 0;
-      b.innerHTML =
-        "<span>" +
-        (locked ? "🔒" : i) +
-        "</span>" +
-        '<span class="stars">' +
-        [1, 2, 3]
-          .map(function (k) {
-            return '<span class="' + (k <= st ? "on" : "") + '">★</span>';
-          })
-          .join("") +
-        "</span>";
-      if (!locked)
-        b.addEventListener("click", function () {
-          Sfx.unlock();
-          startLevel(i);
-        });
-      else b.disabled = true;
-      grid.appendChild(b);
-    }
+    let currentChapterEl = null;
+    Levels.CHAPTERS.forEach(function (ch, ci) {
+      const from = ci * 20 + 1,
+        to = ci * 20 + 20;
+      const block = document.createElement("div");
+      block.className = "chapter";
+      const colors = CH_BTN[ci];
+      block.style.setProperty("--btn1", colors[0]);
+      block.style.setProperty("--btn2", colors[1]);
+      block.style.setProperty("--btn3", colors[2]);
+      if (from > d.unlocked) block.classList.add("locked-ch");
+
+      let starSum = 0;
+      for (let i = from; i <= to; i++) starSum += d.stars[i] || 0;
+      const head = document.createElement("div");
+      head.className = "chapter-head";
+      const name = document.createElement("span");
+      name.className = "chapter-name";
+      const small = document.createElement("small");
+      small.textContent = "第 " + (ci + 1) + " 章";
+      name.appendChild(small);
+      name.appendChild(document.createTextNode(ch.name));
+      const stars = document.createElement("span");
+      stars.className = "chapter-stars";
+      stars.textContent = "★ " + starSum + " / 60";
+      head.appendChild(name);
+      head.appendChild(stars);
+      block.appendChild(head);
+      const desc = document.createElement("div");
+      desc.className = "chapter-desc";
+      desc.textContent = "第 " + from + "–" + to + " 关 · " + ch.desc;
+      block.appendChild(desc);
+
+      const grid = document.createElement("div");
+      grid.className = "level-grid";
+      for (let i = from; i <= to; i++) {
+        const b = document.createElement("button");
+        b.className = "level-btn";
+        const locked = i > d.unlocked;
+        if (locked) b.classList.add("locked");
+        if (i === d.unlocked) {
+          b.classList.add("current");
+          currentChapterEl = block;
+        }
+        const st = d.stars[i] || 0;
+        b.innerHTML =
+          "<span>" +
+          (locked ? "🔒" : i) +
+          "</span>" +
+          '<span class="stars">' +
+          [1, 2, 3]
+            .map(function (k) {
+              return '<span class="' + (k <= st ? "on" : "") + '">★</span>';
+            })
+            .join("") +
+          "</span>";
+        if (!locked)
+          b.addEventListener("click", function () {
+            Sfx.unlock();
+            startLevel(i);
+          });
+        else b.disabled = true;
+        grid.appendChild(b);
+      }
+      block.appendChild(grid);
+      root.appendChild(block);
+    });
     $("#btnContinue").textContent =
       d.unlocked > 1
         ? "继续第 " + Math.min(d.unlocked, TOTAL_LEVELS) + " 关"
         : "开始游戏";
+    // 滚动到当前章节
+    if (currentChapterEl && d.unlocked > 20) {
+      requestAnimationFrame(function () {
+        currentChapterEl.scrollIntoView({ block: "start" });
+      });
+    }
   }
 
   function applyMute() {
@@ -1126,5 +1332,10 @@
   }
 
   // 调试/测试用
-  window.__game = { G: G, startLevel: startLevel, levelConfig: levelConfig };
+  window.__game = {
+    G: G,
+    startLevel: startLevel,
+    levelConfig: Levels.levelConfig,
+    Save: Save,
+  };
 })();
